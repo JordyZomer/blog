@@ -3,6 +3,16 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
+    <loc>https://pwning.systems/links/</loc>
+    <lastmod>2021-03-10T17:55:42+01:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://pwning.systems/</loc>
+    <lastmod>2021-03-10T17:55:42+01:00</lastmod>
+  </url>
+  
+  <url>
     <loc>https://pwning.systems/posts/an-introduction-to-kernel-exploitation-part1/</loc>
     <lastmod>2021-03-08T18:42:53+01:00</lastmod>
   </url>
@@ -14,11 +24,6 @@
   
   <url>
     <loc>https://pwning.systems/bugs/</loc>
-    <lastmod>2021-03-04T18:43:47+01:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://pwning.systems/</loc>
     <lastmod>2021-03-04T18:43:47+01:00</lastmod>
   </url>
   

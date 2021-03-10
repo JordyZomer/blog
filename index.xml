@@ -7,10 +7,20 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>Jordy Zomer</copyright>
-    <lastBuildDate>Thu, 04 Mar 2021 18:43:47 +0100</lastBuildDate>
+    <lastBuildDate>Wed, 10 Mar 2021 17:55:42 +0100</lastBuildDate>
     
 	<atom:link href="https://pwning.systems/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Links</title>
+      <link>https://pwning.systems/links/</link>
+      <pubDate>Wed, 10 Mar 2021 17:55:42 +0100</pubDate>
+      
+      <guid>https://pwning.systems/links/</guid>
+      <description>Links to sites I like:
+ Darkscience - Nice IRC network SmashTheStack - Nice wargames and community! OverTheWire - Another set of great wargames Dustri.org - Cool person that writes great blogposts :)  </description>
+    </item>
     
     <item>
       <title>An introduction to Kernel Exploitation Part 1</title>
