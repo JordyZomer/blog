@@ -18,7 +18,7 @@
       <pubDate>Wed, 10 Mar 2021 17:55:42 +0100</pubDate>
       
       <guid>https://pwning.systems/links/</guid>
-      <description>Links to sites I like:
+      <description>Here are some links to a few of my favorite websites.
  Darkscience - Nice IRC network SmashTheStack - Nice wargames and community! OverTheWire - Another set of great wargames Dustri.org - Cool person that writes great blogposts :)  </description>
     </item>
     
@@ -39,7 +39,7 @@ Prerequisites
       <pubDate>Thu, 04 Mar 2021 18:43:47 +0100</pubDate>
       
       <guid>https://pwning.systems/bugs/</guid>
-      <description>Some of the bugs I found are:
+      <description>The following are some of the bugs I discovered:
 2021  CVE-2021-3177: Python 3.x through 3.9.1 has a buffer overflow in PyCArg_repr in _ctypes/callproc.c, which may lead to remote code execution in certain Python applications that accept floating-point numbers as untrusted input, as demonstrated by a 1e300 argument to c_double.from_param. This occurs because sprintf is used unsafely.  2020   CVE-2020-12105: OpenConnect through 8.08 mishandles negative return values from X509_check_ function calls, which allows an attacker that is able to get valid certificates from a CA with a specially crafted CommonName to perform a person-in-the-middle attack against VPN clients.</description>
     </item>
     
@@ -49,10 +49,10 @@ Prerequisites
       <pubDate>Thu, 04 Mar 2021 18:35:06 +0100</pubDate>
       
       <guid>https://pwning.systems/about/</guid>
-      <description>Hey! Welcome to my blog!
-I&amp;rsquo;m Jordy (aka Oblivion on IRC), a few of my interests which I may post about are:
- Fuzzing Reverse Engineering Binary Exploitation Vulnerability Research (mainly OSS focused)  Make sure to also check-out my Twitter.
-Wanna contact me? jordy [a-t] pwning.systems :)
+      <description>Hello and welcome to my blog!
+I&amp;rsquo;m Jordy (also known as Oblivion on IRC), and some of my interests that I may discuss include:
+ Fuzzing Reverse Engineering Binary Exploitation Vulnerability Research (mainly OSS focused)  And, don&amp;rsquo;t forget to find me on Twitter!
+You can reach out to me by email at jordy [a-t] pwning.sytems :)
 Cheers!</description>
     </item>
     
