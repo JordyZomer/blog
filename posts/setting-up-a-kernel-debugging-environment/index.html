@@ -7,8 +7,8 @@
   <meta http-equiv="content-type" content="text/html; charset=utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="Following up on my first blog post, I&amp;rsquo;ve received a few requests to write about setting up a debugging environment; however, since everybody uses different emulators and so on, I&amp;rsquo;ll mainly focus on which config options are useful!
-You must first obtain the kernel sources for your preferred version before you can set up a kernel suitable for debugging. We&amp;rsquo;ll have to decompress it after that.
-$ wget https://git.kernel.org/torvalds/t/linux-5.12-rc5.tar.gz # user your prefered version $ tar xvf linux-5." />
+You must first obtain the kernel sources for your prefered version before you can set up a kernel suitable for debugging. We&amp;rsquo;ll have to decompress it after that.
+$ wget https://git.kernel.org/torvalds/t/linux-5.12-rc5.tar.gz # use your prefered version $ tar xvf linux-5." />
 <meta name="keywords" content="debugging, kernel" />
 <meta name="robots" content="noodp" />
 <link rel="canonical" href="https://pwning.systems/posts/setting-up-a-kernel-debugging-environment/" />
@@ -163,8 +163,8 @@ $ wget https://git.kernel.org/torvalds/t/linux-5.12-rc5.tar.gz # user your prefe
 
   <div class="post-content"><div>
         <p>Following up on my first blog post, I&rsquo;ve received a few requests to write about setting up a debugging environment; however, since everybody uses different emulators and so on, I&rsquo;ll mainly focus on which config options are useful!</p>
-<p>You must first obtain the kernel sources for your preferred version before you can set up a kernel suitable for debugging. We&rsquo;ll have to decompress it after that.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ wget https://git.kernel.org/torvalds/t/linux-5.12-rc5.tar.gz <span style="color:#75715e"># user your prefered version</span>
+<p>You must first obtain the kernel sources for your prefered version before you can set up a kernel suitable for debugging. We&rsquo;ll have to decompress it after that.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ wget https://git.kernel.org/torvalds/t/linux-5.12-rc5.tar.gz <span style="color:#75715e"># use your prefered version</span>
 $ tar xvf linux-5.12-rc5.tar.gz
 </code></pre></div><p>After you&rsquo;ve pulled your source, you&rsquo;ll need to determine which emulator you&rsquo;ll use and how you&rsquo;ll use it. Personally, I prefer QEMU + kvm, but I&rsquo;ve recently learned about <a href="https://github.com/amluto/virtme/">virtme</a>, which is basically a handy QEMU wrapper.</p>
 <p>Depending on which you&rsquo;ll use  you&rsquo;ll need some requirements.</p>
@@ -187,14 +187,14 @@ $ make kvmconfig
 </code></pre></div><p>We&rsquo;re prepared to do some configurations now that we&rsquo;ve completed this!</p>
 <p>One of the essential configuration options is <code>CONFIG_DEBUG_INFO=y</code>, this adds debugging symbols to the kernel and modules.</p>
 <p>Allowing the kernel to print symbolic crash information and symbolic stack backtraces could be desired when debugging, for this we can use <code>CONFIG_KALLSYMS=y</code>. Since all symbols must be loaded into the kernel image, this increases the kernel&rsquo;s size slightly.</p>
-<p>While it improves your systems security, KASLR is making debugging more difficult since since kernel symbol addresses change with each restart, the debugger will have to take extra steps to map functions and data in memory to the corresponding debug symbols, therefore I like to disable it in debugging VM&rsquo;s (On a production system, this should not be disabled).</p>
-<p>If you want to disable KASLR, make sure that <code># CONFIG RANDOMIZE BASE is not set</code> is in your.config file.</p>
+<p>While it improves your systems security, KASLR is making debugging more difficult since since kernel symbol addresses change with each restart, the debugger will have to take extra steps to map functions and data in memory to the corresponding debug symbols, therefore I like to disable it in debugging VM&rsquo;s. On a production system, this should not be disabled.</p>
+<p>If you want to disable KASLR, make sure that <code># CONFIG RANDOMIZE BASE is not set</code> is in your .config file.</p>
 <p>If you are debugging, you may also like some options that make it easier to detect bugs. There&rsquo;s a few options for this let me list them below.</p>
 <ul>
 <li><a href="https://www.kernel.org/doc/html/latest/dev-tools/kasan.html">KASAN</a> is used to detect use-after-free and out-of-bounds; it&rsquo;s very useful for debugging, but it degrades performance levels significantly.</li>
 <li><a href="https://www.kernel.org/doc/html/latest/dev-tools/ubsan.html">UBSAN</a> is used to detect undefined actions, UBSAN employs compile-time instrumentation.</li>
 <li><a href="https://www.kernel.org/doc/html/latest/dev-tools/kcsan.html">KCSAN</a> is a dynamic race detector that detects data races as its primary feature.</li>
-<li><a href="https://www.kernel.org/doc/html/latest/dev-tools/kfence.html">KFENCE</a> is a low overhead memory integrity error detector that detects heap out-of-bounds acces, use-after-free and invalid free bugs (less precise in detecting bugs than KASAN).</li>
+<li><a href="https://www.kernel.org/doc/html/latest/dev-tools/kfence.html">KFENCE</a> is a low overhead memory integrity error detector. It detects heap out-of-bounds acces, use-after-free and invalid free bugs; Less precise in detecting bugs than KASAN.</li>
 <li><a href="https://www.kernel.org/doc/html/latest/dev-tools/kmemleak.html">Kmemleak</a> is used to detect potential kernel memory leaks (like Valgrind for your kernel).</li>
 </ul>
 <p>Below I will put the config options for each of these.</p>
@@ -211,7 +211,7 @@ CONFIG_UBSAN<span style="color:#f92672">=</span>y
 <span style="color:#75715e"># or add a &#34;UBSAN SANITIZE := y&#34; line to the respectable Makefile to instrument specific bits</span>
 <span style="color:#75715e"># depending on what you&#39;re debugging.</span>
 CONFIG_UBSAN_SANITIZE_ALL<span style="color:#f92672">=</span>y
-</code></pre></div><p>More options for UBSAN  at [UBSAN usage] (<a href="https://www.kernel.org/doc/html/latest/dev-tools/ubsan.html#usage)">https://www.kernel.org/doc/html/latest/dev-tools/ubsan.html#usage)</a>.</p>
+</code></pre></div><p>More options for UBSAN  at <a href="https://www.kernel.org/doc/html/latest/dev-tools/ubsan.html#usage">UBSAN usage</a>.</p>
 <p>KCSAN:</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e"># Probably the easiest config to set :)</span>
 CONFIG_KCSAN<span style="color:#f92672">=</span>y
@@ -226,13 +226,15 @@ CONFIG_KCSAN<span style="color:#f92672">=</span>y
 </code></pre></div><p>So, now that you&rsquo;ve built your kernel, what&rsquo;s next? It&rsquo;s time to get your emulator set up!</p>
 <p>This move will be really simple for <code>virtme</code>; all you have to do is:</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ virtme-run --kdir PATH_TO_YOUR_KERNEL_DIRECTORY
-</code></pre></div><p>This step will be a little more difficult, or at the very least time-consuming, for qemu. We&rsquo;ll need to create an image, and since I&rsquo;m a slacker, I always use syzkaller&rsquo;s create-image.sh to do so.</p>
+</code></pre></div><p>This step will be a little more difficult, or at the very least, time-consuming, for qemu. We&rsquo;ll need to create an image, and since I&rsquo;m a slacker, I always use syzkaller&rsquo;s <code>create-image.sh</code> to do so.</p>
 <p>To create an image:</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ wget https://raw.githubusercontent.com/google/syzkaller/master/tools/create-image.sh -O create-image.sh
 $ chmod +x create-image.sh
 $ ./create-image.sh
 </code></pre></div><p>I run a really hacky bash script to start the VM, which will leave you with a <code>stretch.id_rsa</code> and a <code>stretch.img</code>:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">export KERNEL<span style="color:#f92672">=</span>/root/linux-5.12-rc3 <span style="color:#75715e"># Change this to the path to your kernel</span>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e">#!/bin/bash
+</span><span style="color:#75715e"></span>
+export KERNEL<span style="color:#f92672">=</span>/root/linux-5.12-rc3 <span style="color:#75715e"># Change this to the path to your kernel</span>
 
 qemu-system-x86_64 <span style="color:#ae81ff">\
 </span><span style="color:#ae81ff"></span>        -m 2G <span style="color:#ae81ff">\
