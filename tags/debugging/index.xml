@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>debugging on pwning.systems</title>
+    <link>https://pwning.systems/tags/debugging/</link>
+    <description>Recent content in debugging on pwning.systems</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <copyright>Jordy Zomer</copyright>
+    <lastBuildDate>Wed, 31 Mar 2021 18:06:16 +0200</lastBuildDate>
+    
+	<atom:link href="https://pwning.systems/tags/debugging/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Setting Up a Kernel Debugging Environment</title>
+      <link>https://pwning.systems/posts/setting-up-a-kernel-debugging-environment/</link>
+      <pubDate>Wed, 31 Mar 2021 18:06:16 +0200</pubDate>
+      
+      <guid>https://pwning.systems/posts/setting-up-a-kernel-debugging-environment/</guid>
+      <description>Following up on my first blog post, I&amp;rsquo;ve received a few requests to write about setting up a debugging environment; however, since everybody uses different emulators and so on, I&amp;rsquo;ll mainly focus on which config options are useful!
+You must first obtain the kernel sources for your preferred version before you can set up a kernel suitable for debugging. We&amp;rsquo;ll have to decompress it after that.
+$ wget https://git.kernel.org/torvalds/t/linux-5.12-rc5.tar.gz # user your prefered version $ tar xvf linux-5.</description>
+    </item>
+    
+  </channel>
+</rss>

@@ -13,6 +13,17 @@
     
     
     <item>
+      <title>Setting Up a Kernel Debugging Environment</title>
+      <link>https://pwning.systems/posts/setting-up-a-kernel-debugging-environment/</link>
+      <pubDate>Wed, 31 Mar 2021 18:06:16 +0200</pubDate>
+      
+      <guid>https://pwning.systems/posts/setting-up-a-kernel-debugging-environment/</guid>
+      <description>Following up on my first blog post, I&amp;rsquo;ve received a few requests to write about setting up a debugging environment; however, since everybody uses different emulators and so on, I&amp;rsquo;ll mainly focus on which config options are useful!
+You must first obtain the kernel sources for your preferred version before you can set up a kernel suitable for debugging. We&amp;rsquo;ll have to decompress it after that.
+$ wget https://git.kernel.org/torvalds/t/linux-5.12-rc5.tar.gz # user your prefered version $ tar xvf linux-5.</description>
+    </item>
+    
+    <item>
       <title>Links</title>
       <link>https://pwning.systems/links/</link>
       <pubDate>Wed, 10 Mar 2021 17:55:42 +0100</pubDate>
