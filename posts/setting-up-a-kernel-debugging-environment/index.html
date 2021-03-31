@@ -188,7 +188,7 @@ $ make kvmconfig
 </code></pre></div><p>We&rsquo;re prepared to do some configurations now that we&rsquo;ve completed this!</p>
 <p>One of the essential configuration options is <code>CONFIG_DEBUG_INFO=y</code>, this adds debugging symbols to the kernel and modules.</p>
 <p>Allowing the kernel to print symbolic crash information and symbolic stack backtraces could be desired when debugging, for this we can use <code>CONFIG_KALLSYMS=y</code>. Since all symbols must be loaded into the kernel image, this increases the kernel&rsquo;s size slightly.</p>
-<p>While it improves your systems security, KASLR is making debugging more difficult since since kernel symbol addresses change with each restart, the debugger will have to take extra steps to map functions and data in memory to the corresponding debug symbols, therefore I like to disable it in debugging VM&rsquo;s. On a production system, this should not be disabled.</p>
+<p>While it improves your systems security, KASLR is making debugging more difficult since kernel symbol addresses change with each restart, the debugger will have to take extra steps to map functions and data in memory to the corresponding debug symbols, therefore I like to disable it in debugging VM&rsquo;s. On a production system, this should not be disabled.</p>
 <p>If you want to disable KASLR, make sure that <code># CONFIG RANDOMIZE BASE is not set</code> is in your .config file.</p>
 <p>If you are debugging, you may also like some options that make it easier to detect bugs. There&rsquo;s a few options for this let me list them below.</p>
 <ul>
@@ -251,6 +251,7 @@ qemu-system-x86_64 <span style="color:#ae81ff">\
 </span><span style="color:#ae81ff"></span>        2&gt;&amp;<span style="color:#ae81ff">1</span> | tee vm.log
 </code></pre></div><p>When you&rsquo;re done you can kill it with <code>kill $(cat vm.pid)</code>.</p>
 <p>That&rsquo;s what there is to it! Please keep in mind that this setup is far from ideal, and you should not rely solely on my solutions; if you prefer VirtualBox, use VirtualBox; if you prefer Vagrant, use Vagrant.</p>
+<p>As always, if you have any comments or suggestions, let me know on <code>jordy [a-t] pwning.systems</code> :)</p>
 <p>Happy Debugging,</p>
 <p>Jordy</p>
 
