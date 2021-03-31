@@ -199,10 +199,13 @@ $ make kvmconfig
 </ul>
 <p>Below I will put the config options for each of these.</p>
 <p>KASAN:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">CONFIG_KASAN<span style="color:#f92672">=</span>y <span style="color:#75715e"># Enable KASAN</span>
-CONFIG_KASAN_INLINE<span style="color:#f92672">=</span>y <span style="color:#75715e"># Use software mode with inline instrumentation, this supports both SLUB and SLAB memory allocations and is a lot more performant than outline instrumentation.</span>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e"># Enable KASAN</span>
+CONFIG_KASAN<span style="color:#f92672">=</span>y
+<span style="color:#75715e"># Use software mode with inline instrumentation, this supports both SLUB and SLAB memory allocations and is a lot more performant than outline instrumentation.</span>
+CONFIG_KASAN_INLINE<span style="color:#f92672">=</span>y 
 </code></pre></div><p>UBSAN:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">CONFIG_UBSAN<span style="color:#f92672">=</span>y <span style="color:#75715e"># Enable UBSAN</span>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e"># Enable UBSAN</span>
+CONFIG_UBSAN<span style="color:#f92672">=</span>y 
 
 <span style="color:#75715e"># You can use this line to allow testing of the entire kernel</span> 
 <span style="color:#75715e"># or add a &#34;UBSAN SANITIZE := y&#34; line to the respectable Makefile to instrument specific bits</span>
@@ -210,7 +213,8 @@ CONFIG_KASAN_INLINE<span style="color:#f92672">=</span>y <span style="color:#757
 CONFIG_UBSAN_SANITIZE_ALL<span style="color:#f92672">=</span>y
 </code></pre></div><p>More options for UBSAN  at [UBSAN usage] (<a href="https://www.kernel.org/doc/html/latest/dev-tools/ubsan.html#usage)">https://www.kernel.org/doc/html/latest/dev-tools/ubsan.html#usage)</a>.</p>
 <p>KCSAN:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">CONFIG_KCSAN <span style="color:#f92672">=</span> y <span style="color:#75715e"># Probably the easiest config to set :)</span>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e"># Probably the easiest config to set :)</span>
+CONFIG_KCSAN<span style="color:#f92672">=</span>y
 </code></pre></div><p>KFENCE:</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">CONFIG_KFENCE<span style="color:#f92672">=</span>y
 </code></pre></div><p>Kmemleak:</p>
