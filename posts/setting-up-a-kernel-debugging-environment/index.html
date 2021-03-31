@@ -167,7 +167,18 @@ $ wget https://git.kernel.org/torvalds/t/linux-5.12-rc5.tar.gz # user your prefe
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ wget https://git.kernel.org/torvalds/t/linux-5.12-rc5.tar.gz <span style="color:#75715e"># user your prefered version</span>
 $ tar xvf linux-5.12-rc5.tar.gz
 </code></pre></div><p>After you&rsquo;ve pulled your source, you&rsquo;ll need to determine which emulator you&rsquo;ll use and how you&rsquo;ll use it. Personally, I prefer QEMU + kvm, but I&rsquo;ve recently learned about <a href="https://github.com/amluto/virtme/">virtme</a>, which is basically a handy QEMU wrapper.</p>
-<p>You&rsquo;ll need to create some default configs depending on which option you choose; I really like how virtme has a tool to generate a minimum viable config.</p>
+<p>Depending on which you&rsquo;ll use  you&rsquo;ll need some requirements.</p>
+<p>QEMU:</p>
+<ul>
+<li>debootstrap</li>
+<li>qemu-system</li>
+</ul>
+<p>Virtme:</p>
+<ul>
+<li>python3</li>
+<li>qemu-system</li>
+</ul>
+<p>Once you have installed the dependencies we&rsquo;ll need to create some default configs depending on which option you choose; I really like how virtme has a tool to generate a minimum viable config.</p>
 <p>QEMU:</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ make defconfig
 $ make kvmconfig
