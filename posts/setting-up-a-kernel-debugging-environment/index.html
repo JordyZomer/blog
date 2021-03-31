@@ -8,7 +8,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="Following up on my first blog post, I&amp;rsquo;ve received a few requests to write about setting up a debugging environment; however, since everybody uses different emulators and so on, I&amp;rsquo;ll mainly focus on which config options are useful!
 You must first obtain the kernel sources for your prefered version before you can set up a kernel suitable for debugging. We&amp;rsquo;ll have to decompress it after that.
-$ wget https://git.kernel.org/torvalds/t/linux-5.12-rc5.tar.gz # use your prefered version $ tar xvf linux-5." />
+# use your prefered version $ wget https://git." />
 <meta name="keywords" content="debugging, kernel" />
 <meta name="robots" content="noodp" />
 <link rel="canonical" href="https://pwning.systems/posts/setting-up-a-kernel-debugging-environment/" />
@@ -164,7 +164,8 @@ $ wget https://git.kernel.org/torvalds/t/linux-5.12-rc5.tar.gz # use your prefer
   <div class="post-content"><div>
         <p>Following up on my first blog post, I&rsquo;ve received a few requests to write about setting up a debugging environment; however, since everybody uses different emulators and so on, I&rsquo;ll mainly focus on which config options are useful!</p>
 <p>You must first obtain the kernel sources for your prefered version before you can set up a kernel suitable for debugging. We&rsquo;ll have to decompress it after that.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ wget https://git.kernel.org/torvalds/t/linux-5.12-rc5.tar.gz <span style="color:#75715e"># use your prefered version</span>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e"># use your prefered version</span>
+$ wget https://git.kernel.org/torvalds/t/linux-5.12-rc5.tar.gz 
 $ tar xvf linux-5.12-rc5.tar.gz
 </code></pre></div><p>After you&rsquo;ve pulled your source, you&rsquo;ll need to determine which emulator you&rsquo;ll use and how you&rsquo;ll use it. Personally, I prefer QEMU + kvm, but I&rsquo;ve recently learned about <a href="https://github.com/amluto/virtme/">virtme</a>, which is basically a handy QEMU wrapper.</p>
 <p>Depending on which you&rsquo;ll use  you&rsquo;ll need some requirements.</p>
