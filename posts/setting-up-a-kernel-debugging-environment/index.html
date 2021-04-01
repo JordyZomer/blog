@@ -7,8 +7,8 @@
   <meta http-equiv="content-type" content="text/html; charset=utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="Following up on my first blog post, I&amp;rsquo;ve received a few requests to write about setting up a debugging environment; however, since everybody uses different emulators and so on, I&amp;rsquo;ll mainly focus on which config options are useful!
-You must first obtain the kernel sources for your prefered version before you can set up a kernel suitable for debugging. We&amp;rsquo;ll have to decompress it after that.
-# use your prefered version $ wget https://git." />
+You must first obtain the kernel sources for your preferred version before you can set up a kernel suitable for debugging. We&amp;rsquo;ll have to decompress it after that.
+# use your preferred version $ wget https://git." />
 <meta name="keywords" content="debugging, kernel" />
 <meta name="robots" content="noodp" />
 <link rel="canonical" href="https://pwning.systems/posts/setting-up-a-kernel-debugging-environment/" />
@@ -163,8 +163,8 @@ You must first obtain the kernel sources for your prefered version before you ca
 
   <div class="post-content"><div>
         <p>Following up on my first blog post, I&rsquo;ve received a few requests to write about setting up a debugging environment; however, since everybody uses different emulators and so on, I&rsquo;ll mainly focus on which config options are useful!</p>
-<p>You must first obtain the kernel sources for your prefered version before you can set up a kernel suitable for debugging. We&rsquo;ll have to decompress it after that.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e"># use your prefered version</span>
+<p>You must first obtain the kernel sources for your preferred version before you can set up a kernel suitable for debugging. We&rsquo;ll have to decompress it after that.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e"># use your preferred version</span>
 $ wget https://git.kernel.org/torvalds/t/linux-5.12-rc5.tar.gz 
 $ tar xvf linux-5.12-rc5.tar.gz
 </code></pre></div><p>After you&rsquo;ve pulled your source, you&rsquo;ll need to determine which emulator you&rsquo;ll use and how you&rsquo;ll use it. Personally, I prefer QEMU + kvm, but I&rsquo;ve recently learned about <a href="https://github.com/amluto/virtme/">virtme</a>, which is basically a handy QEMU wrapper.</p>
@@ -223,11 +223,12 @@ CONFIG_KCSAN<span style="color:#f92672">=</span>y
 </code></pre></div><p>So, if you want to debug a kernel, you should enable a debugger. We can choose between KDB and KGDB. Because this comes down to preference  I&rsquo;ll direct you to <a href="https://www.kernel.org/doc/html/latest/dev-tools/kgdb.html">https://www.kernel.org/doc/html/latest/dev-tools/kgdb.html</a>.</p>
 <p>This should hopefully suffice for a simple debugging setup; but, if you want to debug more complicated issues such as locking, you should refer to <a href="https://github.com/torvalds/linux/blob/master/lib/Kconfig.debug">Kconfig.debug</a> for additional config keys.</p>
 <p>It&rsquo;s time to build the kernel after you&rsquo;re content with your.config file! This can be achieved using the following command (this may take a while).</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ make -j <span style="color:#66d9ef">$(</span>nproc<span style="color:#66d9ef">)</span> <span style="color:#75715e"># Build the kernel with all available processing units</span>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e"># Build the kernel with all available processing units</span>
+$ make -j <span style="color:#66d9ef">$(</span>nproc<span style="color:#66d9ef">)</span>
 </code></pre></div><p>So, now that you&rsquo;ve built your kernel, what&rsquo;s next? It&rsquo;s time to get your emulator set up!</p>
 <p>This move will be really simple for <code>virtme</code>; all you have to do is:</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ virtme-run --kdir PATH_TO_YOUR_KERNEL_DIRECTORY
-</code></pre></div><p>This step will be a little more difficult, or at the very least, time-consuming, for qemu. We&rsquo;ll need to create an image, and since I&rsquo;m a slacker, I always use syzkaller&rsquo;s <code>create-image.sh</code> to do so.</p>
+</code></pre></div><p>For QEMU this step will be a little more difficult, or at the very least, time-consuming. We&rsquo;ll need to create an image, and since I&rsquo;m a slacker, I always use syzkaller&rsquo;s <code>create-image.sh</code> to do so.</p>
 <p>To create an image:</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ wget https://raw.githubusercontent.com/google/syzkaller/master/tools/create-image.sh -O create-image.sh
 $ chmod +x create-image.sh
@@ -250,7 +251,14 @@ qemu-system-x86_64 <span style="color:#ae81ff">\
 </span><span style="color:#ae81ff"></span>        -pidfile vm.pid <span style="color:#ae81ff">\
 </span><span style="color:#ae81ff"></span>        2&gt;&amp;<span style="color:#ae81ff">1</span> | tee vm.log
 </code></pre></div><p>When you&rsquo;re done you can kill it with <code>kill $(cat vm.pid)</code>.</p>
-<p>That&rsquo;s what there is to it! Please keep in mind that this setup is far from ideal, and you should not rely solely on my solutions; if you prefer VirtualBox, use VirtualBox; if you prefer Vagrant, use Vagrant.</p>
+<p>Thanks to <a href="https://twitter.com/vegard_no">Vergard Nossum</a>,  I found out about Plan 9 Resource Sharing Support, and it could be used to boot the VM of your host filesystem.</p>
+<blockquote>
+<p>Fun fact: KVM uses it as its native host-guest file sharing protocol.</p>
+</blockquote>
+<p>If you want to use the 9P2000 protocol, make sure that <code>CONFIG_9P_FS=y</code> is set in your <code>.config</code> file, and then update your <code>start-vm.sh</code> to include:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">	-append <span style="color:#e6db74">&#34;rootfstype=9p root=/dev/root rootflags=trans=virtio,version=9p2000.L&#34;</span> <span style="color:#ae81ff">\ </span>
+	-fsdev local,id<span style="color:#f92672">=</span>fsdev0,path<span style="color:#f92672">=</span>/,security_model<span style="color:#f92672">=</span>none -device virtio-9-pci,fsdev<span style="color:#f92672">=</span>fsdev0,mount_tag<span style="color:#f92672">=</span>/dev/root <span style="color:#ae81ff">\
+</span></code></pre></div><p>That&rsquo;s what there is to it! Please keep in mind that this setup is far from ideal, and you should not rely solely on my solutions; if you prefer VirtualBox, use VirtualBox; if you prefer Vagrant, use Vagrant.</p>
 <p>As always, if you have any comments or suggestions, let me know on <code>jordy [a-t] pwning.systems</code> :)</p>
 <p>Happy Debugging,</p>
 <p>Jordy</p>
