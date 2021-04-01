@@ -253,7 +253,8 @@ qemu-system-x86_64 <span style="color:#ae81ff">\
 </code></pre></div><p>When you&rsquo;re done you can kill it with <code>kill $(cat vm.pid)</code>.</p>
 <p>Thanks to <a href="https://twitter.com/vegard_no">Vergard Nossum</a>,  I found out about Plan 9 Resource Sharing Support, and it could be used to boot the VM of your host filesystem.</p>
 <blockquote>
-<p>Fun fact: KVM uses it as its native host-guest file sharing protocol.</p>
+<p>Fun fact: KVM uses it as its native host-guest file sharing protocol.
+<code>virtme</code> Is also using this to boot up a kernel with your host FS.</p>
 </blockquote>
 <p>If you want to use the 9P2000 protocol, make sure that <code>CONFIG_9P_FS=y</code> is set in your <code>.config</code> file, and then update your <code>start-vm.sh</code> to include:</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">	-append <span style="color:#e6db74">&#34;rootfstype=9p root=/dev/root rootflags=trans=virtio,version=9p2000.L&#34;</span> <span style="color:#ae81ff">\ </span>
