@@ -198,7 +198,7 @@ $ make kvmconfig
 <li><a href="https://www.kernel.org/doc/html/latest/dev-tools/kfence.html">KFENCE</a> is a low overhead memory integrity error detector. It detects heap out-of-bounds acces, use-after-free and invalid free bugs; Less precise in detecting bugs than KASAN.</li>
 <li><a href="https://www.kernel.org/doc/html/latest/dev-tools/kmemleak.html">Kmemleak</a> is used to detect potential kernel memory leaks (like Valgrind for your kernel).</li>
 </ul>
-<p>Below I will put the config options for each of these.</p>
+<p>All of those tools need their own configuration.</p>
 <p>KASAN:</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash"><span style="color:#75715e"># Enable KASAN</span>
 CONFIG_KASAN<span style="color:#f92672">=</span>y
