@@ -193,7 +193,7 @@ $ make kvmconfig
 <p>If you are debugging, you may also like some options that make it easier to detect bugs. There&rsquo;s a few options for this let me list them below.</p>
 <ul>
 <li><a href="https://www.kernel.org/doc/html/latest/dev-tools/kasan.html">KASAN</a> is used to detect use-after-free and out-of-bounds; it&rsquo;s very useful for debugging, but it degrades performance levels significantly.</li>
-<li><a href="https://www.kernel.org/doc/html/latest/dev-tools/ubsan.html">UBSAN</a> is used to detect undefined actions, UBSAN employs compile-time instrumentation.</li>
+<li><a href="https://www.kernel.org/doc/html/latest/dev-tools/ubsan.html">UBSAN</a> is used to detect undefined actions, UBSAN employs compile-time instrumentation to find undefined behaviour. You can find the features of UBSAN that the linux kernel could use at <a href="https://github.com/torvalds/linux/blob/master/scripts/Makefile.ubsan">UBSAN Makefile</a> and check them against <a href="https://clang.llvm.org/docs/UndefinedBehaviorSanitizer.html#ubsan-checks">UBSAN&rsquo;s features</a>.</li>
 <li><a href="https://www.kernel.org/doc/html/latest/dev-tools/kcsan.html">KCSAN</a> is a dynamic race detector that detects data races as its primary feature.</li>
 <li><a href="https://www.kernel.org/doc/html/latest/dev-tools/kfence.html">KFENCE</a> is a low overhead memory integrity error detector. It detects heap out-of-bounds acces, use-after-free and invalid free bugs; Less precise in detecting bugs than KASAN.</li>
 <li><a href="https://www.kernel.org/doc/html/latest/dev-tools/kmemleak.html">Kmemleak</a> is used to detect potential kernel memory leaks (like Valgrind for your kernel).</li>
