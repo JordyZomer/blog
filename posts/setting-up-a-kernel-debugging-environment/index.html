@@ -182,7 +182,7 @@ $ tar xvf linux-5.12-rc5.tar.gz
 <p>Once you have installed the dependencies we&rsquo;ll need to create some default configs depending on which option you choose; I really like how virtme has a tool to generate a minimum viable config.</p>
 <p>QEMU:</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ make defconfig
-$ make kvmconfig
+$ make kvm_guest.config 
 </code></pre></div><p>Virtme:</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-bash" data-lang="bash">$ virtme-configkernel --defconfig
 </code></pre></div><p>We&rsquo;re prepared to do some configurations now that we&rsquo;ve completed this!</p>
