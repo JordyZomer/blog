@@ -7,10 +7,20 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>Jordy Zomer</copyright>
-    <lastBuildDate>Wed, 31 Mar 2021 18:06:16 +0200</lastBuildDate>
+    <lastBuildDate>Tue, 20 Jul 2021 19:30:12 +0200</lastBuildDate>
     
 	<atom:link href="https://pwning.systems/tags/kernel/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>A story about an Apple and two fetches</title>
+      <link>https://pwning.systems/posts/apple-kernel-vulnerability/</link>
+      <pubDate>Tue, 20 Jul 2021 19:30:12 +0200</pubDate>
+      
+      <guid>https://pwning.systems/posts/apple-kernel-vulnerability/</guid>
+      <description>*Mistreatment by Apple Security is unfortunately something you&amp;rsquo;re likely to come across on a regular basis. Usually this concerns people that conduct free work for Apple in their spare time by auditing their assets. Despite Apple&amp;rsquo;s website claiming the opposite, you&amp;rsquo;ll frequently find things like quiet patching, no credit, no bounties, and an appalling lack of communication.
+It is unwise how Apple is treating this because it frustrates people. Remember, every bug that gets reported to them (instead of being sold to some shady outfit) and that gets fixed subsequently is one that can not be exploited in the future to make your device less safe.</description>
+    </item>
     
     <item>
       <title>Setting Up a Kernel Debugging Environment</title>
