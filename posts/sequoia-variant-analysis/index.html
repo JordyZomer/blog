@@ -168,7 +168,7 @@
  <span style="color:#f92672">*</span> <span style="color:#a6e22e">@author</span> Jordy Zomer
  <span style="color:#f92672">*</span> <span style="color:#a6e22e">@name</span> unsiged to signed used <span style="color:#f92672">in</span> pointer arithmetic
  <span style="color:#f92672">*</span> <span style="color:#a6e22e">@description</span> finds unsigned to signed conversions used <span style="color:#f92672">in</span> pointer arithmetic, potentially causing an out<span style="color:#f92672">-</span>of<span style="color:#f92672">-</span>bound access
- <span style="color:#f92672">*</span> <span style="color:#a6e22e">@id</span> cpp<span style="color:#f92672">/</span>out<span style="color:#f92672">-</span>of<span style="color:#f92672">-</span>bounds
+ <span style="color:#f92672">*</span> <span style="color:#a6e22e">@id</span> cpp<span style="color:#f92672">/</span>sign<span style="color:#f92672">-</span>conversion<span style="color:#f92672">-</span>pointer<span style="color:#f92672">-</span>arithmetic
  <span style="color:#f92672">*</span> <span style="color:#a6e22e">@kind</span> problem
  <span style="color:#f92672">*</span> <span style="color:#a6e22e">@problem.severity</span> warning
  <span style="color:#f92672">*</span> <span style="color:#a6e22e">@tags</span> reliability
@@ -178,13 +178,14 @@
 
 <span style="color:#f92672">import</span> cpp
 <span style="color:#f92672">import</span> semmle.code.cpp.dataflow.DataFlow
+<span style="color:#f92672">import</span> semmle.code.cpp.security.Overflow
 
 <span style="color:#f92672">from</span> FunctionCall call, Function f, Parameter p, DataFlow::Node sink, PointerArithmeticOperation pao
 where
 f <span style="color:#f92672">=</span> call<span style="color:#f92672">.</span>getTarget() <span style="color:#f92672">and</span>
 p <span style="color:#f92672">=</span> f<span style="color:#f92672">.</span>getAParameter() <span style="color:#f92672">and</span>
-p<span style="color:#f92672">.</span>getType()<span style="color:#f92672">.</span>getUnderlyingType()<span style="color:#f92672">.</span>(IntegralType)<span style="color:#f92672">.</span>isSigned() <span style="color:#f92672">and</span>
-call<span style="color:#f92672">.</span>getArgument(p<span style="color:#f92672">.</span>getIndex())<span style="color:#f92672">.</span>getType()<span style="color:#f92672">.</span>getUnderlyingType()<span style="color:#f92672">.</span>(IntegralType)<span style="color:#f92672">.</span>isUnsigned() <span style="color:#f92672">and</span>
+p<span style="color:#f92672">.</span>getUnspecifiedType()<span style="color:#f92672">.</span>(IntegralType)<span style="color:#f92672">.</span>isSigned() <span style="color:#f92672">and</span>
+call<span style="color:#f92672">.</span>getArgument(p<span style="color:#f92672">.</span>getIndex())<span style="color:#f92672">.</span>getUnspecifiedType()<span style="color:#f92672">.</span>(IntegralType)<span style="color:#f92672">.</span>isUnsigned() <span style="color:#f92672">and</span>
 <span style="color:#f92672">//</span> Here we check <span style="color:#66d9ef">if</span> the argument <span style="color:#f92672">is</span> an operand <span style="color:#f92672">in</span> an expression that does pointer arithmetics
 pao<span style="color:#f92672">.</span>getAnOperand() <span style="color:#f92672">=</span> sink<span style="color:#f92672">.</span>asExpr() <span style="color:#f92672">and</span>
 DataFlow::localFlow(DataFlow::parameterNode(p), sink)
@@ -201,7 +202,7 @@ select call, <span style="color:#e6db74">&#34;This call: $@  passes an unsigned 
  <span style="color:#f92672">*</span> <span style="color:#a6e22e">@author</span> Jordy Zomer
  <span style="color:#f92672">*</span> <span style="color:#a6e22e">@name</span> unsiged to signed used <span style="color:#f92672">in</span> pointer arithmetic
  <span style="color:#f92672">*</span> <span style="color:#a6e22e">@description</span> finds unsigned to signed conversions used <span style="color:#f92672">in</span> pointer arithmetic, potentially causing an out<span style="color:#f92672">-</span>of<span style="color:#f92672">-</span>bound access
- <span style="color:#f92672">*</span> <span style="color:#a6e22e">@id</span> cpp<span style="color:#f92672">/</span>out<span style="color:#f92672">-</span>of<span style="color:#f92672">-</span>bounds
+ <span style="color:#f92672">*</span> <span style="color:#a6e22e">@id</span> cpp<span style="color:#f92672">/</span>sign<span style="color:#f92672">-</span>conversion<span style="color:#f92672">-</span>pointer<span style="color:#f92672">-</span>arithmetic
  <span style="color:#f92672">*</span> <span style="color:#a6e22e">@kind</span> problem
  <span style="color:#f92672">*</span> <span style="color:#a6e22e">@problem.severity</span> warning
  <span style="color:#f92672">*</span> <span style="color:#a6e22e">@tags</span> reliability
@@ -213,17 +214,17 @@ select call, <span style="color:#e6db74">&#34;This call: $@  passes an unsigned 
 <span style="color:#f92672">import</span> semmle.code.cpp.dataflow.DataFlow
 <span style="color:#f92672">import</span> semmle.code.cpp.security.Overflow
 
-<span style="color:#f92672">from</span> FunctionCall call, Function f, Parameter p, DataFlow::Node sink, PointerArithmeticOperation pao, Operation a, Operation b
+<span style="color:#f92672">from</span> FunctionCall call, Function f, Parameter p, DataFlow::Node sink, PointerArithmeticOperation pao
 where
 f <span style="color:#f92672">=</span> call<span style="color:#f92672">.</span>getTarget() <span style="color:#f92672">and</span>
 p <span style="color:#f92672">=</span> f<span style="color:#f92672">.</span>getAParameter() <span style="color:#f92672">and</span>
-p<span style="color:#f92672">.</span>getType()<span style="color:#f92672">.</span>getUnderlyingType()<span style="color:#f92672">.</span>(IntegralType)<span style="color:#f92672">.</span>isSigned() <span style="color:#f92672">and</span>
-call<span style="color:#f92672">.</span>getArgument(p<span style="color:#f92672">.</span>getIndex())<span style="color:#f92672">.</span>getType()<span style="color:#f92672">.</span>getUnderlyingType()<span style="color:#f92672">.</span>(IntegralType)<span style="color:#f92672">.</span>isUnsigned() <span style="color:#f92672">and</span>
+p<span style="color:#f92672">.</span>getUnspecifiedType()<span style="color:#f92672">.</span>(IntegralType)<span style="color:#f92672">.</span>isSigned() <span style="color:#f92672">and</span>
+call<span style="color:#f92672">.</span>getArgument(p<span style="color:#f92672">.</span>getIndex())<span style="color:#f92672">.</span>getUnspecifiedType()<span style="color:#f92672">.</span>(IntegralType)<span style="color:#f92672">.</span>isUnsigned() <span style="color:#f92672">and</span>
 pao<span style="color:#f92672">.</span>getAnOperand() <span style="color:#f92672">=</span> sink<span style="color:#f92672">.</span>asExpr() <span style="color:#f92672">and</span>
 <span style="color:#f92672">//</span> determine whether there <span style="color:#f92672">is</span> <span style="color:#f92672">not</span> a check where the <span style="color:#e6db74">`Sink`</span> <span style="color:#f92672">&lt;</span> <span style="color:#e6db74">&#34;something&#34;</span> 
-<span style="color:#f92672">not</span> guardedLesser(a, sink<span style="color:#f92672">.</span>asExpr()) <span style="color:#f92672">and</span>
+<span style="color:#f92672">not</span> exists(Operation a <span style="color:#f92672">|</span> guardedLesser(a, sink<span style="color:#f92672">.</span>asExpr())) <span style="color:#f92672">and</span>
 <span style="color:#f92672">//</span>  establish whether there <span style="color:#f92672">is</span> <span style="color:#f92672">not</span> a size check where the <span style="color:#e6db74">`Source`</span> <span style="color:#f92672">&gt;</span> <span style="color:#e6db74">&#34;something&#34;</span>
-<span style="color:#f92672">not</span> guardedGreater(b, call<span style="color:#f92672">.</span>getArgument(p<span style="color:#f92672">.</span>getIndex())) <span style="color:#f92672">and</span>
+<span style="color:#f92672">not</span> exists(Operation b <span style="color:#f92672">|</span> guardedGreater(b, call<span style="color:#f92672">.</span>getArgument(p<span style="color:#f92672">.</span>getIndex()))) <span style="color:#f92672">and</span>
 <span style="color:#f92672">//</span> identify whether the <span style="color:#e6db74">`Source`</span> <span style="color:#f92672">is</span> <span style="color:#f92672">not</span> constant
 <span style="color:#f92672">not</span> call<span style="color:#f92672">.</span>getArgument(p<span style="color:#f92672">.</span>getIndex())<span style="color:#f92672">.</span>isConstant() <span style="color:#f92672">and</span>
 DataFlow::localFlow(DataFlow::parameterNode(p), sink)
