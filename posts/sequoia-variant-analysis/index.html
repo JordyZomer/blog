@@ -162,7 +162,7 @@
 
   <div class="post-content"><div>
         <p>I imagine we&rsquo;ve all heard about the recent &ldquo;Sequoia&rdquo; bug discovered by the Qualys Research team. It&rsquo;s a fascinating bug caused by a <code>size_t</code> to <code>int</code> conversion. According to the analysis, <code>seq_dentry</code> attempts to convert a <code>size_t</code> to an <code>int</code> by sending <code>size_t size</code> to the <code>dentry_path</code> function, which expects a signed integer. Assuming the architecture is 32 bits, <code>size_t</code>'s value can be <code>0</code> to <code>2^32 (4294967296)</code> since it is unsigned, but <code>int</code> can only hold <code>2^31 (2147483648)</code> because it is signed (this means that it can have negative values also). This results in an out-of-bounds access during the pointer arithmetic in <code>dentry_path</code> that&rsquo;s done with <code>p = buf + buflen;</code>.</p>
-<p>Because this vulnerability is uncommon, I decided to create a (CodeQL)[https://securitylab.github.com/tools/codeql/] query to &ldquo;discover&rdquo; it. So, precisely what is CodeQL? CodeQL is a language by Semmle/Github/Microsoft to control a semantic analysis engine for static code examination. In CodeQL, code is treated as data. Security vulnerabilities, bugs, and other issues are represented as the results of queries that may be executed on code-retrieved databases. Queries that discover potential vulnerabilities display the outcome in the source file. As a result, it is a tremendously strong tool for variant analysis.</p>
+<p>Because this vulnerability is uncommon, I decided to create a <a href="https://securitylab.github.com/tools/codeql/">CodeQL</a> query to &ldquo;discover&rdquo; it. So, precisely what is CodeQL? CodeQL is a language by Semmle/Github/Microsoft to control a semantic analysis engine for static code examination. In CodeQL, code is treated as data. Security vulnerabilities, bugs, and other issues are represented as the results of queries that may be executed on code-retrieved databases. Queries that discover potential vulnerabilities display the outcome in the source file. As a result, it is a tremendously strong tool for variant analysis.</p>
 <p>Alright, let&rsquo;s look at the CodeQL query I created.</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">/**</span>
  <span style="color:#f92672">*</span> <span style="color:#a6e22e">@author</span> Jordy Zomer
@@ -191,9 +191,9 @@ select call, <span style="color:#e6db74">&#34;This call: $@  passes an unsigned 
 </code></pre></div><p>So what we do here is obtain a <code>FunctionCall</code> to a <code>Function</code> with any parameter that requires a signed integer. Following that, we look for any function calls that provide an unsigned number to this function despite the fact that it expects a signed integer. After that, we will use the <code>DataFlow</code> library to &ldquo;taint track&rdquo; any use of this argument in pointer arithmetic. Running this query on the Linux kernel database successfully identifies the Sequoia vulnerability as well as hundreds of additional instances that may be vulnerable.</p>
 <p>Because there are so many results, I decided to refine the query slightly, so I added three filters to narrow down the criteria.</p>
 <ul>
-<li>Establish whether there is a size check where the source is more than something</li>
-<li>Determine whether the sink is smaller than something</li>
-<li>Identify whether the source is a constant.</li>
+<li>Establish whether there is a size check where the <code>source</code> is more than something</li>
+<li>Determine whether the <code>sink</code> is smaller than something</li>
+<li>Identify whether the <code>source</code> is a constant.</li>
 </ul>
 <p>I configured it such that it only displayed results if none of these filters matched. Below you will find the updated query:</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">/**</span>
@@ -226,18 +226,18 @@ DataFlow::localFlow(DataFlow::parameterNode(p), sink)
 select call, <span style="color:#e6db74">&#34;This call: $@  passes an unsigned int to a function that requires a signed int: $@. And then used in pointer arithmetic: $@&#34;</span>, call, call<span style="color:#f92672">.</span>toString(), f, f<span style="color:#f92672">.</span>toString(), sink, sink<span style="color:#f92672">.</span>toString()
 </code></pre></div><p>Going through the results yielded the following issues and associated patches:</p>
 <ul>
-<li>(<a href="https://lkml.org/lkml/2021/7/26/434)%5Bhttps://lkml.org/lkml/2021/7/26/434%5D">https://lkml.org/lkml/2021/7/26/434)[https://lkml.org/lkml/2021/7/26/434]</a></li>
-<li>(<a href="https://lkml.org/lkml/2021/7/26/480)%5Bhttps://lkml.org/lkml/2021/7/26/480%5D">https://lkml.org/lkml/2021/7/26/480)[https://lkml.org/lkml/2021/7/26/480]</a></li>
-<li>(<a href="https://lkml.org/lkml/2021/7/26/480)%5Bhttps://lkml.org/lkml/2021/7/26/481%5D">https://lkml.org/lkml/2021/7/26/480)[https://lkml.org/lkml/2021/7/26/481]</a></li>
-<li>(<a href="https://lkml.org/lkml/2021/7/27/394)%5Bhttps://lkml.org/lkml/2021/7/27/394%5D">https://lkml.org/lkml/2021/7/27/394)[https://lkml.org/lkml/2021/7/27/394]</a></li>
-<li>(<a href="https://lkml.org/lkml/2021/7/27/360)%5Bhttps://lkml.org/lkml/2021/7/27/360%5D">https://lkml.org/lkml/2021/7/27/360)[https://lkml.org/lkml/2021/7/27/360]</a></li>
-<li>(<a href="https://lkml.org/lkml/2021/7/31/121)%5Bhttps://lkml.org/lkml/2021/7/31/121%5D">https://lkml.org/lkml/2021/7/31/121)[https://lkml.org/lkml/2021/7/31/121]</a></li>
-<li>(<a href="https://lkml.org/lkml/2021/7/31/126)%5Bhttps://lkml.org/lkml/2021/7/31/126%5D">https://lkml.org/lkml/2021/7/31/126)[https://lkml.org/lkml/2021/7/31/126]</a></li>
-<li>(<a href="https://lkml.org/lkml/2021/7/31/144)%5Bhttps://lkml.org/lkml/2021/7/31/144%5D">https://lkml.org/lkml/2021/7/31/144)[https://lkml.org/lkml/2021/7/31/144]</a></li>
+<li><a href="https://lkml.org/lkml/2021/7/26/434">https://lkml.org/lkml/2021/7/26/434</a></li>
+<li><a href="https://lkml.org/lkml/2021/7/26/480">https://lkml.org/lkml/2021/7/26/480</a></li>
+<li><a href="https://lkml.org/lkml/2021/7/26/481">https://lkml.org/lkml/2021/7/26/480</a></li>
+<li><a href="https://lkml.org/lkml/2021/7/27/394">https://lkml.org/lkml/2021/7/27/394</a></li>
+<li><a href="https://lkml.org/lkml/2021/7/27/360">https://lkml.org/lkml/2021/7/27/360</a></li>
+<li><a href="https://lkml.org/lkml/2021/7/31/121">https://lkml.org/lkml/2021/7/31/121</a></li>
+<li><a href="https://lkml.org/lkml/2021/7/31/126">https://lkml.org/lkml/2021/7/31/126</a></li>
+<li><a href="https://lkml.org/lkml/2021/7/31/144">https://lkml.org/lkml/2021/7/31/144</a></li>
 </ul>
 <p>Due to the large number of results, we didn&rsquo;t check to see if <strong>everything</strong> was truly vulnerable, we simply wanted it to be obviously secure. Furthermore, this is a work in progress, expect additional patches soon. If you wish to help fix these findings, please feel free to reach out to me on <code>jordy [at] pwning.systems</code> and I&rsquo;ll provide you with the results.</p>
 <p>Because of the nature of this query, it may be a good idea for the Github Securitylab team to use it on LGTM, as this type of bug may occur in any C application. CodeQL&rsquo;s potential as a static analysis tool is obvious. I sincerely hope that it will be used in other research and projects.</p>
-<p>I&rsquo;d like to thank (Greg)[http://kroah.com/log/] and the other developers that contributed for their fantastic collaboration and insights. It was a huge amount of fun!</p>
+<p>I&rsquo;d like to thank <a href="http://kroah.com/log/">Greg</a> and the other developers that contributed for their fantastic collaboration and insights. It was a huge amount of fun!</p>
 <p>Cheers!</p>
 
       </div></div>
