@@ -7,10 +7,28 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>Jordy Zomer</copyright>
-    <lastBuildDate>Tue, 20 Jul 2021 19:30:12 +0200</lastBuildDate>
+    <lastBuildDate>Tue, 03 Aug 2021 18:25:12 +0200</lastBuildDate>
     
 	<atom:link href="https://pwning.systems/tags/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>CodeQL</title>
+      <link>https://pwning.systems/tags/codeql/</link>
+      <pubDate>Tue, 03 Aug 2021 18:25:12 +0200</pubDate>
+      
+      <guid>https://pwning.systems/tags/codeql/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>kernel</title>
+      <link>https://pwning.systems/tags/kernel/</link>
+      <pubDate>Tue, 03 Aug 2021 18:25:12 +0200</pubDate>
+      
+      <guid>https://pwning.systems/tags/kernel/</guid>
+      <description></description>
+    </item>
     
     <item>
       <title>apple</title>
@@ -18,15 +36,6 @@
       <pubDate>Tue, 20 Jul 2021 19:30:12 +0200</pubDate>
       
       <guid>https://pwning.systems/tags/apple/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>kernel</title>
-      <link>https://pwning.systems/tags/kernel/</link>
-      <pubDate>Tue, 20 Jul 2021 19:30:12 +0200</pubDate>
-      
-      <guid>https://pwning.systems/tags/kernel/</guid>
       <description></description>
     </item>
     

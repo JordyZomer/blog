@@ -3,32 +3,42 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
+    <loc>https://pwning.systems/tags/codeql/</loc>
+    <lastmod>2021-08-03T18:25:12+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://pwning.systems/tags/kernel/</loc>
+    <lastmod>2021-08-03T18:25:12+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://pwning.systems/posts/</loc>
+    <lastmod>2021-08-03T18:25:12+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://pwning.systems/</loc>
+    <lastmod>2021-08-03T18:25:12+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://pwning.systems/tags/</loc>
+    <lastmod>2021-08-03T18:25:12+02:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://pwning.systems/posts/sequoia-variant-analysis/</loc>
+    <lastmod>2021-08-03T18:25:12+02:00</lastmod>
+  </url>
+  
+  <url>
     <loc>https://pwning.systems/posts/apple-kernel-vulnerability/</loc>
     <lastmod>2021-07-20T19:30:12+02:00</lastmod>
   </url>
   
   <url>
     <loc>https://pwning.systems/tags/apple/</loc>
-    <lastmod>2021-07-20T19:30:12+02:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://pwning.systems/tags/kernel/</loc>
-    <lastmod>2021-07-20T19:30:12+02:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://pwning.systems/posts/</loc>
-    <lastmod>2021-07-20T19:30:12+02:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://pwning.systems/</loc>
-    <lastmod>2021-07-20T19:30:12+02:00</lastmod>
-  </url>
-  
-  <url>
-    <loc>https://pwning.systems/tags/</loc>
     <lastmod>2021-07-20T19:30:12+02:00</lastmod>
   </url>
   
