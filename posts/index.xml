@@ -18,7 +18,7 @@
       <pubDate>Tue, 03 Aug 2021 18:25:12 +0200</pubDate>
       
       <guid>https://pwning.systems/posts/sequoia-variant-analysis/</guid>
-      <description>I imagine we&amp;rsquo;ve all heard about the recent &amp;ldquo;Sequoia&amp;rdquo; bug discovered by the Qualys Research team. It&amp;rsquo;s a fascinating bug caused by a size_t to int conversion. According to the analysis, seq_dentry attempts to convert a size_t to an int by sending size_t size to the dentry_path function, which expects a signed integer. Assuming the architecture is 32 bits, size_t&#39;s value can be 0 to 4294967296 since it is unsigned, but int can only hold from -2147483648 to 2147483648 because it is signed (this means that it can have negative values also).</description>
+      <description>I imagine we&amp;rsquo;ve all heard about the recent &amp;ldquo;Sequoia&amp;rdquo; bug discovered by the Qualys Research team, identified by CVE-2021-33909. It&amp;rsquo;s a fascinating bug caused by a size_t to int conversion. According to the analysis, seq_dentry attempts to convert a size_t to an int by sending size_t size to the dentry_path function, which expects a signed integer. Assuming the architecture is 32 bits, size_t&#39;s value can be 0 to 4294967296 since it is unsigned, but int can only hold from -2147483648 to 2147483648 because it is signed (this means that it can have negative values also).</description>
     </item>
     
     <item>
