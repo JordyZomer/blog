@@ -166,7 +166,7 @@
 <p>Alright, let&rsquo;s look at the CodeQL query I wrote.</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">/**</span>
  <span style="color:#f92672">*</span> <span style="color:#a6e22e">@author</span> Jordy Zomer
- <span style="color:#f92672">*</span> <span style="color:#a6e22e">@name</span> unsiged to signed used <span style="color:#f92672">in</span> pointer arithmetic
+ <span style="color:#f92672">*</span> <span style="color:#a6e22e">@name</span> unsigned to signed used <span style="color:#f92672">in</span> pointer arithmetic
  <span style="color:#f92672">*</span> <span style="color:#a6e22e">@description</span> finds unsigned to signed conversions used <span style="color:#f92672">in</span> pointer arithmetic, potentially causing an out<span style="color:#f92672">-</span>of<span style="color:#f92672">-</span>bound access
  <span style="color:#f92672">*</span> <span style="color:#a6e22e">@id</span> cpp<span style="color:#f92672">/</span>sign<span style="color:#f92672">-</span>conversion<span style="color:#f92672">-</span>pointer<span style="color:#f92672">-</span>arithmetic
  <span style="color:#f92672">*</span> <span style="color:#a6e22e">@kind</span> problem
@@ -200,7 +200,7 @@ select call, <span style="color:#e6db74">&#34;This call: $@  passes an unsigned 
 <p>I configured it such that it only displayed results if none of these filters matched. Below you will find the updated query:</p>
 <div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">/**</span>
  <span style="color:#f92672">*</span> <span style="color:#a6e22e">@author</span> Jordy Zomer
- <span style="color:#f92672">*</span> <span style="color:#a6e22e">@name</span> unsiged to signed used <span style="color:#f92672">in</span> pointer arithmetic
+ <span style="color:#f92672">*</span> <span style="color:#a6e22e">@name</span> unsigned to signed used <span style="color:#f92672">in</span> pointer arithmetic
  <span style="color:#f92672">*</span> <span style="color:#a6e22e">@description</span> finds unsigned to signed conversions used <span style="color:#f92672">in</span> pointer arithmetic, potentially causing an out<span style="color:#f92672">-</span>of<span style="color:#f92672">-</span>bound access
  <span style="color:#f92672">*</span> <span style="color:#a6e22e">@id</span> cpp<span style="color:#f92672">/</span>sign<span style="color:#f92672">-</span>conversion<span style="color:#f92672">-</span>pointer<span style="color:#f92672">-</span>arithmetic
  <span style="color:#f92672">*</span> <span style="color:#a6e22e">@kind</span> problem
