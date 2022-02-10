@@ -2,41 +2,37 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>pwning.systems</title>
-    <link>https://pwning.systems/</link>
+    <link>http://localhost:61974/</link>
     <description>Recent content on pwning.systems</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>Jordy Zomer</copyright>
-    <lastBuildDate>Tue, 03 Aug 2021 18:25:12 +0200</lastBuildDate>
-    
-	<atom:link href="https://pwning.systems/index.xml" rel="self" type="application/rss+xml" />
-    
-    
+    <lastBuildDate>Tue, 03 Aug 2021 18:25:12 +0200</lastBuildDate><atom:link href="http://localhost:61974/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Variant analysis of the &#39;Sequoia&#39; bug</title>
-      <link>https://pwning.systems/posts/sequoia-variant-analysis/</link>
+      <link>http://localhost:61974/posts/sequoia-variant-analysis/</link>
       <pubDate>Tue, 03 Aug 2021 18:25:12 +0200</pubDate>
       
-      <guid>https://pwning.systems/posts/sequoia-variant-analysis/</guid>
-      <description>I imagine we&amp;rsquo;ve all heard about the recent &amp;ldquo;Sequoia&amp;rdquo; bug discovered by the Qualys Research team, identified by CVE-2021-33909. It&amp;rsquo;s a fascinating bug caused by a size_t to int conversion. According to the analysis, seq_dentry attempts to convert a size_t to an int by sending size_t size to the dentry_path function, which expects a signed integer. Assuming the architecture is 32 bits, size_t&#39;s value can be 0 to 4294967296 since it is unsigned, but int can only hold from -2147483648 to 2147483648 because it is signed (this means that it can have negative values also).</description>
+      <guid>http://localhost:61974/posts/sequoia-variant-analysis/</guid>
+      <description>I imagine we&amp;rsquo;ve all heard about the recent &amp;ldquo;Sequoia&amp;rdquo; bug discovered by the Qualys Research team, identified by CVE-2021-33909. It&amp;rsquo;s a fascinating bug caused by a size_t to int conversion. According to the analysis, seq_dentry attempts to convert a size_t to an int by sending size_t size to the dentry_path function, which expects a signed integer. Assuming the architecture is 32 bits, size_t&amp;rsquo;s value can be 0 to 4294967296 since it is unsigned, but int can only hold from -2147483648 to 2147483648 because it is signed (this means that it can have negative values also).</description>
     </item>
     
     <item>
       <title>A story about an Apple and two fetches</title>
-      <link>https://pwning.systems/posts/apple-kernel-vulnerability/</link>
+      <link>http://localhost:61974/posts/apple-kernel-vulnerability/</link>
       <pubDate>Tue, 20 Jul 2021 19:30:12 +0200</pubDate>
       
-      <guid>https://pwning.systems/posts/apple-kernel-vulnerability/</guid>
+      <guid>http://localhost:61974/posts/apple-kernel-vulnerability/</guid>
       <description>Mistreatment by Apple Security is unfortunately something you&amp;rsquo;re likely to come across on a regular basis. Usually this concerns people that conduct free work for Apple in their spare time by auditing their assets. Despite Apple&amp;rsquo;s website claiming the opposite, you&amp;rsquo;ll frequently find things like quiet patching, no credit, no bounties, and an appalling lack of communication.
 This is unwise on Apple&amp;rsquo;s part because it frustrates people who find these bugs and disincentivizes them from sharing them with Apple.</description>
     </item>
     
     <item>
       <title>Setting Up a Kernel Debugging Environment</title>
-      <link>https://pwning.systems/posts/setting-up-a-kernel-debugging-environment/</link>
+      <link>http://localhost:61974/posts/setting-up-a-kernel-debugging-environment/</link>
       <pubDate>Wed, 31 Mar 2021 18:06:16 +0200</pubDate>
       
-      <guid>https://pwning.systems/posts/setting-up-a-kernel-debugging-environment/</guid>
+      <guid>http://localhost:61974/posts/setting-up-a-kernel-debugging-environment/</guid>
       <description>Following up on my first blog post, I&amp;rsquo;ve received a few requests to write about setting up a debugging environment; however, since everybody uses different emulators and so on, I&amp;rsquo;ll mainly focus on which config options are useful!
 You must first obtain the kernel sources for your preferred version before you can set up a kernel suitable for debugging. We&amp;rsquo;ll have to decompress it after that.
 # use your preferred version $ wget https://git.</description>
@@ -44,20 +40,20 @@ You must first obtain the kernel sources for your preferred version before you c
     
     <item>
       <title>Links</title>
-      <link>https://pwning.systems/links/</link>
+      <link>http://localhost:61974/links/</link>
       <pubDate>Wed, 10 Mar 2021 17:55:42 +0100</pubDate>
       
-      <guid>https://pwning.systems/links/</guid>
+      <guid>http://localhost:61974/links/</guid>
       <description>Here are some links to a few of my favorite websites.
  Darkscience - Nice IRC network SmashTheStack - Nice wargames and community! OverTheWire - Another set of great wargames Dustri.org - Cool person that writes great blogposts :)  </description>
     </item>
     
     <item>
       <title>An introduction to Kernel Exploitation Part 1</title>
-      <link>https://pwning.systems/posts/an-introduction-to-kernel-exploitation-part1/</link>
+      <link>http://localhost:61974/posts/an-introduction-to-kernel-exploitation-part1/</link>
       <pubDate>Mon, 08 Mar 2021 18:42:53 +0100</pubDate>
       
-      <guid>https://pwning.systems/posts/an-introduction-to-kernel-exploitation-part1/</guid>
+      <guid>http://localhost:61974/posts/an-introduction-to-kernel-exploitation-part1/</guid>
       <description>I&amp;rsquo;m writing this post because I often hear that kernel exploitation is intimidating or difficult to learn. As a result, I&amp;rsquo;ve decided to start a series of basic bugs and exercises to get you started!
 Prerequisites
  Knowledge of the Linux command line Knowing how to read and write basic C may be beneficial Being able to debug with the help of a virtual computer or another system Able to install the kernel module compilation build requirements A basic understanding of the difference between userland and kernelland could be helpful Having a basic understanding of assembly can be beneficial for future episodes  For this part, I wrote a simple Linux character device, /dev/shell.</description>
@@ -65,20 +61,21 @@ Prerequisites
     
     <item>
       <title>Bugs</title>
-      <link>https://pwning.systems/bugs/</link>
+      <link>http://localhost:61974/bugs/</link>
       <pubDate>Thu, 04 Mar 2021 18:43:47 +0100</pubDate>
       
-      <guid>https://pwning.systems/bugs/</guid>
+      <guid>http://localhost:61974/bugs/</guid>
       <description>The following are some of the bugs I discovered:
-2021  CVE-2021-3177: Python 3.x through 3.9.1 has a buffer overflow in PyCArg_repr in _ctypes/callproc.c, which may lead to remote code execution in certain Python applications that accept floating-point numbers as untrusted input, as demonstrated by a 1e300 argument to c_double.from_param. This occurs because sprintf is used unsafely.  2020   CVE-2020-12105: OpenConnect through 8.08 mishandles negative return values from X509_check_ function calls, which allows an attacker that is able to get valid certificates from a CA with a specially crafted CommonName to perform a person-in-the-middle attack against VPN clients.</description>
+2021   CVE-2021-3177: Python 3.x through 3.9.1 has a buffer overflow in PyCArg_repr in _ctypes/callproc.c, which may lead to remote code execution in certain Python applications that accept floating-point numbers as untrusted input, as demonstrated by a 1e300 argument to c_double.from_param. This occurs because sprintf is used unsafely.
+  CVE-2020-29622: A race condition was addressed with additional validation. This issue is fixed in Security Update 2021-005 Catalina.</description>
     </item>
     
     <item>
       <title>About</title>
-      <link>https://pwning.systems/about/</link>
+      <link>http://localhost:61974/about/</link>
       <pubDate>Thu, 04 Mar 2021 18:35:06 +0100</pubDate>
       
-      <guid>https://pwning.systems/about/</guid>
+      <guid>http://localhost:61974/about/</guid>
       <description>Hello and welcome to my blog!
 I&amp;rsquo;m Jordy (also known as Oblivion on IRC), and some of my interests that I may discuss include:
  Fuzzing Reverse Engineering Binary Exploitation Vulnerability Research (mainly OSS focused)  And, don&amp;rsquo;t forget to find me on Twitter!

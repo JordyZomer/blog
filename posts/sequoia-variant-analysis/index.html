@@ -1,32 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
 <script data-goatcounter="https://pwningsystems.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
-<head>
+<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=61974&amp;path=livereload" data-no-instant defer></script>
   
     <title>Variant analysis of the &#39;Sequoia&#39; bug :: pwning.systems</title>
   
   <meta http-equiv="content-type" content="text/html; charset=utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="I imagine we&amp;rsquo;ve all heard about the recent &amp;ldquo;Sequoia&amp;rdquo; bug discovered by the Qualys Research team, identified by CVE-2021-33909. It&amp;rsquo;s a fascinating bug caused by a size_t to int conversion. According to the analysis, seq_dentry attempts to convert a size_t to an int by sending size_t size to the dentry_path function, which expects a signed integer. Assuming the architecture is 32 bits, size_t&#39;s value can be 0 to 4294967296 since it is unsigned, but int can only hold from -2147483648 to 2147483648 because it is signed (this means that it can have negative values also)." />
+<meta name="description" content="I imagine we&amp;rsquo;ve all heard about the recent &amp;ldquo;Sequoia&amp;rdquo; bug discovered by the Qualys Research team, identified by CVE-2021-33909. It&amp;rsquo;s a fascinating bug caused by a size_t to int conversion. According to the analysis, seq_dentry attempts to convert a size_t to an int by sending size_t size to the dentry_path function, which expects a signed integer. Assuming the architecture is 32 bits, size_t&amp;rsquo;s value can be 0 to 4294967296 since it is unsigned, but int can only hold from -2147483648 to 2147483648 because it is signed (this means that it can have negative values also)." />
 <meta name="keywords" content="kernel, CodeQL" />
 <meta name="robots" content="noodp" />
-<link rel="canonical" href="https://pwning.systems/posts/sequoia-variant-analysis/" />
+<link rel="canonical" href="http://localhost:61974/posts/sequoia-variant-analysis/" />
 
 
 
 
-<link rel="stylesheet" href="https://pwning.systems/assets/style.css">
+<link rel="stylesheet" href="http://localhost:61974/assets/style.css">
 
-  <link rel="stylesheet" href="https://pwning.systems/assets/green.css">
-
-
+  <link rel="stylesheet" href="http://localhost:61974/assets/green.css">
 
 
 
 
-<link rel="apple-touch-icon" href="https://pwning.systems/img/apple-touch-icon-192x192.png">
 
-  <link rel="shortcut icon" href="https://pwning.systems/img/favicon/green.png">
+
+<link rel="apple-touch-icon" href="http://localhost:61974/img/apple-touch-icon-192x192.png">
+
+  <link rel="shortcut icon" href="http://localhost:61974/img/favicon/green.png">
 
 
 
@@ -43,10 +43,10 @@
 <meta property="og:type" content="article" />
 <meta property="og:title" content="Variant analysis of the &#39;Sequoia&#39; bug">
 <meta property="og:description" content="I imagine we&#39;ve all heard about the recent &#39;Sequoia&#39; bug discovered by the Qualys Research team. It&#39;s a fascinating bug so I decided to do variant analysis using CodeQL!" />
-<meta property="og:url" content="https://pwning.systems/posts/sequoia-variant-analysis/" />
+<meta property="og:url" content="http://localhost:61974/posts/sequoia-variant-analysis/" />
 <meta property="og:site_name" content="pwning.systems" />
 
-  <meta property="og:image" content="https://pwning.systems/">
+  <meta property="og:image" content="http://localhost:61974/">
 
 <meta property="og:image:width" content="2048">
 <meta property="og:image:height" content="1024">
@@ -134,7 +134,7 @@
     
 <div class="post">
   <h1 class="post-title">
-    <a href="https://pwning.systems/posts/sequoia-variant-analysis/">Variant analysis of the &lsquo;Sequoia&rsquo; bug</a></h1>
+    <a href="http://localhost:61974/posts/sequoia-variant-analysis/">Variant analysis of the &lsquo;Sequoia&rsquo; bug</a></h1>
   <div class="post-meta">
     
       <span class="post-date">
@@ -149,9 +149,9 @@
   
   <span class="post-tags">
     
-    #<a href="https://pwning.systems/tags/kernel/">kernel</a>&nbsp;
+    #<a href="http://localhost:61974/tags/kernel/">kernel</a>&nbsp;
     
-    #<a href="https://pwning.systems/tags/codeql/">CodeQL</a>&nbsp;
+    #<a href="http://localhost:61974/tags/codeql/">CodeQL</a>&nbsp;
     
   </span>
   
@@ -161,16 +161,16 @@
   
 
   <div class="post-content"><div>
-        <p>I imagine we&rsquo;ve all heard about the recent <a href="https://blog.qualys.com/vulnerabilities-threat-research/2021/07/20/sequoia-a-local-privilege-escalation-vulnerability-in-linuxs-filesystem-layer-cve-2021-33909">&ldquo;Sequoia&rdquo;</a> bug discovered by the Qualys Research team, identified by <a href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-33909">CVE-2021-33909</a>. It&rsquo;s a fascinating bug caused by a <code>size_t</code> to <code>int</code> conversion. According to the analysis, <code>seq_dentry</code> attempts to convert a <code>size_t</code> to an <code>int</code> by sending <code>size_t size</code> to the <code>dentry_path</code> function, which expects a signed integer. Assuming the architecture is 32 bits, <code>size_t</code>'s value can be <code>0</code> to <code>4294967296</code> since it is unsigned, but <code>int</code> can only hold from <code>-2147483648</code> to <code>2147483648</code> because it is signed (this means that it can have negative values also). This results in an out-of-bounds access during the pointer arithmetic in <code>dentry_path</code> that&rsquo;s done with <code>p = buf + buflen;</code>.</p>
+        <p>I imagine we&rsquo;ve all heard about the recent <a href="https://blog.qualys.com/vulnerabilities-threat-research/2021/07/20/sequoia-a-local-privilege-escalation-vulnerability-in-linuxs-filesystem-layer-cve-2021-33909">&ldquo;Sequoia&rdquo;</a> bug discovered by the Qualys Research team, identified by <a href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-33909">CVE-2021-33909</a>. It&rsquo;s a fascinating bug caused by a <code>size_t</code> to <code>int</code> conversion. According to the analysis, <code>seq_dentry</code> attempts to convert a <code>size_t</code> to an <code>int</code> by sending <code>size_t size</code> to the <code>dentry_path</code> function, which expects a signed integer. Assuming the architecture is 32 bits, <code>size_t</code>&rsquo;s value can be <code>0</code> to <code>4294967296</code> since it is unsigned, but <code>int</code> can only hold from <code>-2147483648</code> to <code>2147483648</code> because it is signed (this means that it can have negative values also). This results in an out-of-bounds access during the pointer arithmetic in <code>dentry_path</code> that&rsquo;s done with <code>p = buf + buflen;</code>.</p>
 <p>This specific bug is interesting because the circumstances it appears in are quite common in the Linux Kernel. To examine this further I decided to employ <a href="https://securitylab.github.com/tools/codeql/">CodeQL</a>. So, precisely what is CodeQL? CodeQL is a language by Semmle/Github/Microsoft to control a semantic analysis engine for static code examination. In CodeQL, code is treated as data. Security vulnerabilities, bugs, and other issues are represented as the results of queries that may be executed on code-retrieved databases. Queries that discover potential vulnerabilities display the outcome in the source file. As a result, it is a tremendously strong tool for variant analysis.</p>
 <p>Alright, let&rsquo;s look at the CodeQL query I wrote.</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">/**</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">/**</span>
  <span style="color:#f92672">*</span> <span style="color:#a6e22e">@author</span> Jordy Zomer
  <span style="color:#f92672">*</span> <span style="color:#a6e22e">@name</span> unsigned to signed used <span style="color:#f92672">in</span> pointer arithmetic
  <span style="color:#f92672">*</span> <span style="color:#a6e22e">@description</span> finds unsigned to signed conversions used <span style="color:#f92672">in</span> pointer arithmetic, potentially causing an out<span style="color:#f92672">-</span>of<span style="color:#f92672">-</span>bound access
  <span style="color:#f92672">*</span> <span style="color:#a6e22e">@id</span> cpp<span style="color:#f92672">/</span>sign<span style="color:#f92672">-</span>conversion<span style="color:#f92672">-</span>pointer<span style="color:#f92672">-</span>arithmetic
  <span style="color:#f92672">*</span> <span style="color:#a6e22e">@kind</span> problem
- <span style="color:#f92672">*</span> <span style="color:#a6e22e">@problem.severity</span> warning
+ <span style="color:#f92672">*</span> <span style="color:#a6e22e">@problem</span><span style="color:#f92672">.</span>severity warning
  <span style="color:#f92672">*</span> <span style="color:#a6e22e">@tags</span> reliability
  <span style="color:#f92672">*</span>       security
  <span style="color:#f92672">*</span>       external<span style="color:#f92672">/</span>cwe<span style="color:#f92672">/</span>cwe<span style="color:#f92672">-</span><span style="color:#ae81ff">787</span>
@@ -198,13 +198,13 @@ select call, <span style="color:#e6db74">&#34;This call: $@  passes an unsigned 
 <li>Identify whether the <code>source</code> is a constant.</li>
 </ul>
 <p>I configured it such that it only displayed results if none of these filters matched. Below you will find the updated query:</p>
-<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">/**</span>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">/**</span>
  <span style="color:#f92672">*</span> <span style="color:#a6e22e">@author</span> Jordy Zomer
  <span style="color:#f92672">*</span> <span style="color:#a6e22e">@name</span> unsigned to signed used <span style="color:#f92672">in</span> pointer arithmetic
  <span style="color:#f92672">*</span> <span style="color:#a6e22e">@description</span> finds unsigned to signed conversions used <span style="color:#f92672">in</span> pointer arithmetic, potentially causing an out<span style="color:#f92672">-</span>of<span style="color:#f92672">-</span>bound access
  <span style="color:#f92672">*</span> <span style="color:#a6e22e">@id</span> cpp<span style="color:#f92672">/</span>sign<span style="color:#f92672">-</span>conversion<span style="color:#f92672">-</span>pointer<span style="color:#f92672">-</span>arithmetic
  <span style="color:#f92672">*</span> <span style="color:#a6e22e">@kind</span> problem
- <span style="color:#f92672">*</span> <span style="color:#a6e22e">@problem.severity</span> warning
+ <span style="color:#f92672">*</span> <span style="color:#a6e22e">@problem</span><span style="color:#f92672">.</span>severity warning
  <span style="color:#f92672">*</span> <span style="color:#a6e22e">@tags</span> reliability
  <span style="color:#f92672">*</span>       security
  <span style="color:#f92672">*</span>       external<span style="color:#f92672">/</span>cwe<span style="color:#f92672">/</span>cwe<span style="color:#f92672">-</span><span style="color:#ae81ff">787</span>
@@ -221,11 +221,11 @@ p <span style="color:#f92672">=</span> f<span style="color:#f92672">.</span>getA
 p<span style="color:#f92672">.</span>getUnspecifiedType()<span style="color:#f92672">.</span>(IntegralType)<span style="color:#f92672">.</span>isSigned() <span style="color:#f92672">and</span>
 call<span style="color:#f92672">.</span>getArgument(p<span style="color:#f92672">.</span>getIndex())<span style="color:#f92672">.</span>getUnspecifiedType()<span style="color:#f92672">.</span>(IntegralType)<span style="color:#f92672">.</span>isUnsigned() <span style="color:#f92672">and</span>
 pao<span style="color:#f92672">.</span>getAnOperand() <span style="color:#f92672">=</span> sink<span style="color:#f92672">.</span>asExpr() <span style="color:#f92672">and</span>
-<span style="color:#f92672">//</span> determine whether there <span style="color:#f92672">is</span> <span style="color:#f92672">not</span> a check where the <span style="color:#e6db74">`Sink`</span> <span style="color:#f92672">&lt;</span> <span style="color:#e6db74">&#34;something&#34;</span> 
+<span style="color:#f92672">//</span> determine whether there <span style="color:#f92672">is</span> <span style="color:#f92672">not</span> a check where the <span style="color:#960050;background-color:#1e0010">`</span>Sink<span style="color:#960050;background-color:#1e0010">`</span> <span style="color:#f92672">&lt;</span> <span style="color:#e6db74">&#34;something&#34;</span> 
 <span style="color:#f92672">not</span> exists(Operation a <span style="color:#f92672">|</span> guardedLesser(a, sink<span style="color:#f92672">.</span>asExpr())) <span style="color:#f92672">and</span>
-<span style="color:#f92672">//</span>  establish whether there <span style="color:#f92672">is</span> <span style="color:#f92672">not</span> a size check where the <span style="color:#e6db74">`Source`</span> <span style="color:#f92672">&gt;</span> <span style="color:#e6db74">&#34;something&#34;</span>
+<span style="color:#f92672">//</span>  establish whether there <span style="color:#f92672">is</span> <span style="color:#f92672">not</span> a size check where the <span style="color:#960050;background-color:#1e0010">`</span>Source<span style="color:#960050;background-color:#1e0010">`</span> <span style="color:#f92672">&gt;</span> <span style="color:#e6db74">&#34;something&#34;</span>
 <span style="color:#f92672">not</span> exists(Operation b <span style="color:#f92672">|</span> guardedGreater(b, call<span style="color:#f92672">.</span>getArgument(p<span style="color:#f92672">.</span>getIndex()))) <span style="color:#f92672">and</span>
-<span style="color:#f92672">//</span> identify whether the <span style="color:#e6db74">`Source`</span> <span style="color:#f92672">is</span> <span style="color:#f92672">not</span> constant
+<span style="color:#f92672">//</span> identify whether the <span style="color:#960050;background-color:#1e0010">`</span>Source<span style="color:#960050;background-color:#1e0010">`</span> <span style="color:#f92672">is</span> <span style="color:#f92672">not</span> constant
 <span style="color:#f92672">not</span> call<span style="color:#f92672">.</span>getArgument(p<span style="color:#f92672">.</span>getIndex())<span style="color:#f92672">.</span>isConstant() <span style="color:#f92672">and</span>
 DataFlow::localFlow(DataFlow::parameterNode(p), sink)
 select call, <span style="color:#e6db74">&#34;This call: $@  passes an unsigned int to a function that requires a signed int: $@. And then used in pointer arithmetic: $@&#34;</span>, call, call<span style="color:#f92672">.</span>toString(), f, f<span style="color:#f92672">.</span>toString(), sink, sink<span style="color:#f92672">.</span>toString()
@@ -258,7 +258,7 @@ select call, <span style="color:#e6db74">&#34;This call: $@  passes an unsigned 
         
         
         <span class="button next">
-            <a href="https://pwning.systems/posts/apple-kernel-vulnerability/">
+            <a href="http://localhost:61974/posts/apple-kernel-vulnerability/">
                 <span class="button__text">A story about an Apple and two fetches</span>
                 <span class="button__icon">→</span>
             </a>
@@ -287,8 +287,8 @@ select call, <span style="color:#e6db74">&#34;This call: $@  passes an unsigned 
   </div>
 </footer>
 
-<script src="https://pwning.systems/assets/main.js"></script>
-<script src="https://pwning.systems/assets/prism.js"></script>
+<script src="http://localhost:61974/assets/main.js"></script>
+<script src="http://localhost:61974/assets/prism.js"></script>
 
 
 
