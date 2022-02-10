@@ -2,63 +2,63 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Tags on pwning.systems</title>
-    <link>http://localhost:61974/tags/</link>
+    <link>https://pwning.systems/tags/</link>
     <description>Recent content in Tags on pwning.systems</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>Jordy Zomer</copyright>
-    <lastBuildDate>Tue, 03 Aug 2021 18:25:12 +0200</lastBuildDate><atom:link href="http://localhost:61974/tags/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 03 Aug 2021 18:25:12 +0200</lastBuildDate><atom:link href="https://pwning.systems/tags/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>CodeQL</title>
-      <link>http://localhost:61974/tags/codeql/</link>
+      <link>https://pwning.systems/tags/codeql/</link>
       <pubDate>Tue, 03 Aug 2021 18:25:12 +0200</pubDate>
       
-      <guid>http://localhost:61974/tags/codeql/</guid>
+      <guid>https://pwning.systems/tags/codeql/</guid>
       <description></description>
     </item>
     
     <item>
       <title>kernel</title>
-      <link>http://localhost:61974/tags/kernel/</link>
+      <link>https://pwning.systems/tags/kernel/</link>
       <pubDate>Tue, 03 Aug 2021 18:25:12 +0200</pubDate>
       
-      <guid>http://localhost:61974/tags/kernel/</guid>
+      <guid>https://pwning.systems/tags/kernel/</guid>
       <description></description>
     </item>
     
     <item>
       <title>apple</title>
-      <link>http://localhost:61974/tags/apple/</link>
+      <link>https://pwning.systems/tags/apple/</link>
       <pubDate>Tue, 20 Jul 2021 19:30:12 +0200</pubDate>
       
-      <guid>http://localhost:61974/tags/apple/</guid>
+      <guid>https://pwning.systems/tags/apple/</guid>
       <description></description>
     </item>
     
     <item>
       <title>vulnerability</title>
-      <link>http://localhost:61974/tags/vulnerability/</link>
+      <link>https://pwning.systems/tags/vulnerability/</link>
       <pubDate>Tue, 20 Jul 2021 19:30:12 +0200</pubDate>
       
-      <guid>http://localhost:61974/tags/vulnerability/</guid>
+      <guid>https://pwning.systems/tags/vulnerability/</guid>
       <description></description>
     </item>
     
     <item>
       <title>debugging</title>
-      <link>http://localhost:61974/tags/debugging/</link>
+      <link>https://pwning.systems/tags/debugging/</link>
       <pubDate>Wed, 31 Mar 2021 18:06:16 +0200</pubDate>
       
-      <guid>http://localhost:61974/tags/debugging/</guid>
+      <guid>https://pwning.systems/tags/debugging/</guid>
       <description></description>
     </item>
     
     <item>
       <title>exploitation</title>
-      <link>http://localhost:61974/tags/exploitation/</link>
+      <link>https://pwning.systems/tags/exploitation/</link>
       <pubDate>Mon, 08 Mar 2021 18:42:53 +0100</pubDate>
       
-      <guid>http://localhost:61974/tags/exploitation/</guid>
+      <guid>https://pwning.systems/tags/exploitation/</guid>
       <description></description>
     </item>
     

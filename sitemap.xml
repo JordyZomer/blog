@@ -2,54 +2,54 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>http://localhost:61974/tags/codeql/</loc>
+    <loc>https://pwning.systems/tags/codeql/</loc>
     <lastmod>2021-08-03T18:25:12+02:00</lastmod>
   </url><url>
-    <loc>http://localhost:61974/tags/kernel/</loc>
+    <loc>https://pwning.systems/tags/kernel/</loc>
     <lastmod>2021-08-03T18:25:12+02:00</lastmod>
   </url><url>
-    <loc>http://localhost:61974/posts/</loc>
+    <loc>https://pwning.systems/posts/</loc>
     <lastmod>2021-08-03T18:25:12+02:00</lastmod>
   </url><url>
-    <loc>http://localhost:61974/</loc>
+    <loc>https://pwning.systems/</loc>
     <lastmod>2021-08-03T18:25:12+02:00</lastmod>
   </url><url>
-    <loc>http://localhost:61974/tags/</loc>
+    <loc>https://pwning.systems/tags/</loc>
     <lastmod>2021-08-03T18:25:12+02:00</lastmod>
   </url><url>
-    <loc>http://localhost:61974/posts/sequoia-variant-analysis/</loc>
+    <loc>https://pwning.systems/posts/sequoia-variant-analysis/</loc>
     <lastmod>2021-08-03T18:25:12+02:00</lastmod>
   </url><url>
-    <loc>http://localhost:61974/posts/apple-kernel-vulnerability/</loc>
+    <loc>https://pwning.systems/posts/apple-kernel-vulnerability/</loc>
     <lastmod>2021-07-20T19:30:12+02:00</lastmod>
   </url><url>
-    <loc>http://localhost:61974/tags/apple/</loc>
+    <loc>https://pwning.systems/tags/apple/</loc>
     <lastmod>2021-07-20T19:30:12+02:00</lastmod>
   </url><url>
-    <loc>http://localhost:61974/tags/vulnerability/</loc>
+    <loc>https://pwning.systems/tags/vulnerability/</loc>
     <lastmod>2021-07-20T19:30:12+02:00</lastmod>
   </url><url>
-    <loc>http://localhost:61974/tags/debugging/</loc>
+    <loc>https://pwning.systems/tags/debugging/</loc>
     <lastmod>2021-03-31T18:06:16+02:00</lastmod>
   </url><url>
-    <loc>http://localhost:61974/posts/setting-up-a-kernel-debugging-environment/</loc>
+    <loc>https://pwning.systems/posts/setting-up-a-kernel-debugging-environment/</loc>
     <lastmod>2021-03-31T18:06:16+02:00</lastmod>
   </url><url>
-    <loc>http://localhost:61974/links/</loc>
+    <loc>https://pwning.systems/links/</loc>
     <lastmod>2021-03-10T17:55:42+01:00</lastmod>
   </url><url>
-    <loc>http://localhost:61974/posts/an-introduction-to-kernel-exploitation-part1/</loc>
+    <loc>https://pwning.systems/posts/an-introduction-to-kernel-exploitation-part1/</loc>
     <lastmod>2021-03-08T18:42:53+01:00</lastmod>
   </url><url>
-    <loc>http://localhost:61974/tags/exploitation/</loc>
+    <loc>https://pwning.systems/tags/exploitation/</loc>
     <lastmod>2021-03-08T18:42:53+01:00</lastmod>
   </url><url>
-    <loc>http://localhost:61974/bugs/</loc>
+    <loc>https://pwning.systems/bugs/</loc>
     <lastmod>2021-03-04T18:43:47+01:00</lastmod>
   </url><url>
-    <loc>http://localhost:61974/about/</loc>
+    <loc>https://pwning.systems/about/</loc>
     <lastmod>2021-03-04T18:35:06+01:00</lastmod>
   </url><url>
-    <loc>http://localhost:61974/categories/</loc>
+    <loc>https://pwning.systems/categories/</loc>
   </url>
 </urlset>

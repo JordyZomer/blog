@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <script data-goatcounter="https://pwningsystems.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
-<head><script src="/livereload.js?mindelay=10&amp;v=2&amp;port=61974&amp;path=livereload" data-no-instant defer></script>
+<head>
   
     <title>Variant analysis of the &#39;Sequoia&#39; bug :: pwning.systems</title>
   
@@ -10,23 +10,23 @@
 <meta name="description" content="I imagine we&amp;rsquo;ve all heard about the recent &amp;ldquo;Sequoia&amp;rdquo; bug discovered by the Qualys Research team, identified by CVE-2021-33909. It&amp;rsquo;s a fascinating bug caused by a size_t to int conversion. According to the analysis, seq_dentry attempts to convert a size_t to an int by sending size_t size to the dentry_path function, which expects a signed integer. Assuming the architecture is 32 bits, size_t&amp;rsquo;s value can be 0 to 4294967296 since it is unsigned, but int can only hold from -2147483648 to 2147483648 because it is signed (this means that it can have negative values also)." />
 <meta name="keywords" content="kernel, CodeQL" />
 <meta name="robots" content="noodp" />
-<link rel="canonical" href="http://localhost:61974/posts/sequoia-variant-analysis/" />
+<link rel="canonical" href="https://pwning.systems/posts/sequoia-variant-analysis/" />
 
 
 
 
-<link rel="stylesheet" href="http://localhost:61974/assets/style.css">
+<link rel="stylesheet" href="https://pwning.systems/assets/style.css">
 
-  <link rel="stylesheet" href="http://localhost:61974/assets/green.css">
-
-
+  <link rel="stylesheet" href="https://pwning.systems/assets/green.css">
 
 
 
 
-<link rel="apple-touch-icon" href="http://localhost:61974/img/apple-touch-icon-192x192.png">
 
-  <link rel="shortcut icon" href="http://localhost:61974/img/favicon/green.png">
+
+<link rel="apple-touch-icon" href="https://pwning.systems/img/apple-touch-icon-192x192.png">
+
+  <link rel="shortcut icon" href="https://pwning.systems/img/favicon/green.png">
 
 
 
@@ -43,10 +43,10 @@
 <meta property="og:type" content="article" />
 <meta property="og:title" content="Variant analysis of the &#39;Sequoia&#39; bug">
 <meta property="og:description" content="I imagine we&#39;ve all heard about the recent &#39;Sequoia&#39; bug discovered by the Qualys Research team. It&#39;s a fascinating bug so I decided to do variant analysis using CodeQL!" />
-<meta property="og:url" content="http://localhost:61974/posts/sequoia-variant-analysis/" />
+<meta property="og:url" content="https://pwning.systems/posts/sequoia-variant-analysis/" />
 <meta property="og:site_name" content="pwning.systems" />
 
-  <meta property="og:image" content="http://localhost:61974/">
+  <meta property="og:image" content="https://pwning.systems/">
 
 <meta property="og:image:width" content="2048">
 <meta property="og:image:height" content="1024">
@@ -134,7 +134,7 @@
     
 <div class="post">
   <h1 class="post-title">
-    <a href="http://localhost:61974/posts/sequoia-variant-analysis/">Variant analysis of the &lsquo;Sequoia&rsquo; bug</a></h1>
+    <a href="https://pwning.systems/posts/sequoia-variant-analysis/">Variant analysis of the &lsquo;Sequoia&rsquo; bug</a></h1>
   <div class="post-meta">
     
       <span class="post-date">
@@ -149,9 +149,9 @@
   
   <span class="post-tags">
     
-    #<a href="http://localhost:61974/tags/kernel/">kernel</a>&nbsp;
+    #<a href="https://pwning.systems/tags/kernel/">kernel</a>&nbsp;
     
-    #<a href="http://localhost:61974/tags/codeql/">CodeQL</a>&nbsp;
+    #<a href="https://pwning.systems/tags/codeql/">CodeQL</a>&nbsp;
     
   </span>
   
@@ -258,7 +258,7 @@ select call, <span style="color:#e6db74">&#34;This call: $@  passes an unsigned 
         
         
         <span class="button next">
-            <a href="http://localhost:61974/posts/apple-kernel-vulnerability/">
+            <a href="https://pwning.systems/posts/apple-kernel-vulnerability/">
                 <span class="button__text">A story about an Apple and two fetches</span>
                 <span class="button__icon">→</span>
             </a>
@@ -287,8 +287,8 @@ select call, <span style="color:#e6db74">&#34;This call: $@  passes an unsigned 
   </div>
 </footer>
 
-<script src="http://localhost:61974/assets/main.js"></script>
-<script src="http://localhost:61974/assets/prism.js"></script>
+<script src="https://pwning.systems/assets/main.js"></script>
+<script src="https://pwning.systems/assets/prism.js"></script>
 
 
 

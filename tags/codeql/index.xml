@@ -2,18 +2,18 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>CodeQL on pwning.systems</title>
-    <link>http://localhost:61974/tags/codeql/</link>
+    <link>https://pwning.systems/tags/codeql/</link>
     <description>Recent content in CodeQL on pwning.systems</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>Jordy Zomer</copyright>
-    <lastBuildDate>Tue, 03 Aug 2021 18:25:12 +0200</lastBuildDate><atom:link href="http://localhost:61974/tags/codeql/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Tue, 03 Aug 2021 18:25:12 +0200</lastBuildDate><atom:link href="https://pwning.systems/tags/codeql/index.xml" rel="self" type="application/rss+xml" />
     <item>
       <title>Variant analysis of the &#39;Sequoia&#39; bug</title>
-      <link>http://localhost:61974/posts/sequoia-variant-analysis/</link>
+      <link>https://pwning.systems/posts/sequoia-variant-analysis/</link>
       <pubDate>Tue, 03 Aug 2021 18:25:12 +0200</pubDate>
       
-      <guid>http://localhost:61974/posts/sequoia-variant-analysis/</guid>
+      <guid>https://pwning.systems/posts/sequoia-variant-analysis/</guid>
       <description>I imagine we&amp;rsquo;ve all heard about the recent &amp;ldquo;Sequoia&amp;rdquo; bug discovered by the Qualys Research team, identified by CVE-2021-33909. It&amp;rsquo;s a fascinating bug caused by a size_t to int conversion. According to the analysis, seq_dentry attempts to convert a size_t to an int by sending size_t size to the dentry_path function, which expects a signed integer. Assuming the architecture is 32 bits, size_t&amp;rsquo;s value can be 0 to 4294967296 since it is unsigned, but int can only hold from -2147483648 to 2147483648 because it is signed (this means that it can have negative values also).</description>
     </item>
     
