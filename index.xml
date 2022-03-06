@@ -7,7 +7,17 @@
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
     <copyright>Jordy Zomer</copyright>
-    <lastBuildDate>Tue, 03 Aug 2021 18:25:12 +0200</lastBuildDate><atom:link href="https://pwning.systems/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Sun, 06 Mar 2022 10:42:53 +0100</lastBuildDate><atom:link href="https://pwning.systems/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Escaping privileged containers for fun</title>
+      <link>https://pwning.systems/posts/escaping-containers-for-fun/</link>
+      <pubDate>Sun, 06 Mar 2022 10:42:53 +0100</pubDate>
+      
+      <guid>https://pwning.systems/posts/escaping-containers-for-fun/</guid>
+      <description>Despite the fact that it is not a &amp;lsquo;real&amp;rsquo; vulnerability, escaping privileged Docker containers is nevertheless pretty funny. And because there will always be people who will come up with reasons or excuses to run a privileged container (even though you really shouldn&amp;rsquo;t), this could really be handy at some point in the future.
+As a result of the recent discovery of the cgroup_release_agent escape trick (CVE-2022-0492), I went on a search for calls to the call_usermodehelper_* family and attempted to determine which ones may be easily accessed within a container environment.</description>
+    </item>
+    
     <item>
       <title>Variant analysis of the &#39;Sequoia&#39; bug</title>
       <link>https://pwning.systems/posts/sequoia-variant-analysis/</link>
@@ -66,8 +76,7 @@ Prerequisites
       
       <guid>https://pwning.systems/bugs/</guid>
       <description>The following are some of the bugs I discovered:
-2021   CVE-2021-3177: Python 3.x through 3.9.1 has a buffer overflow in PyCArg_repr in _ctypes/callproc.c, which may lead to remote code execution in certain Python applications that accept floating-point numbers as untrusted input, as demonstrated by a 1e300 argument to c_double.from_param. This occurs because sprintf is used unsafely.
-  CVE-2020-29622: A race condition was addressed with additional validation. This issue is fixed in Security Update 2021-005 Catalina.</description>
+2022  CVE-2022-26490: st21nfca_connectivity_event_received in drivers/nfc/st21nfca/se.c in the Linux kernel through 5.16.12 has EVT_TRANSACTION buffer overflows because of untrusted length parameters.  2021   CVE-2021-3177: Python 3.x through 3.9.1 has a buffer overflow in PyCArg_repr in _ctypes/callproc.c, which may lead to remote code execution in certain Python applications that accept floating-point numbers as untrusted input, as demonstrated by a 1e300 argument to c_double.</description>
     </item>
     
     <item>

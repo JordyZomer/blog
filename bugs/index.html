@@ -8,8 +8,7 @@
   <meta http-equiv="content-type" content="text/html; charset=utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="description" content="The following are some of the bugs I discovered:
-2021   CVE-2021-3177: Python 3.x through 3.9.1 has a buffer overflow in PyCArg_repr in _ctypes/callproc.c, which may lead to remote code execution in certain Python applications that accept floating-point numbers as untrusted input, as demonstrated by a 1e300 argument to c_double.from_param. This occurs because sprintf is used unsafely.
-  CVE-2020-29622: A race condition was addressed with additional validation. This issue is fixed in Security Update 2021-005 Catalina." />
+2022  CVE-2022-26490: st21nfca_connectivity_event_received in drivers/nfc/st21nfca/se.c in the Linux kernel through 5.16.12 has EVT_TRANSACTION buffer overflows because of untrusted length parameters.  2021   CVE-2021-3177: Python 3.x through 3.9.1 has a buffer overflow in PyCArg_repr in _ctypes/callproc.c, which may lead to remote code execution in certain Python applications that accept floating-point numbers as untrusted input, as demonstrated by a 1e300 argument to c_double." />
 <meta name="keywords" content="" />
 <meta name="robots" content="noodp" />
 <link rel="canonical" href="https://pwning.systems/bugs/" />
@@ -45,8 +44,7 @@
 <meta property="og:type" content="article" />
 <meta property="og:title" content="Bugs">
 <meta property="og:description" content="The following are some of the bugs I discovered:
-2021   CVE-2021-3177: Python 3.x through 3.9.1 has a buffer overflow in PyCArg_repr in _ctypes/callproc.c, which may lead to remote code execution in certain Python applications that accept floating-point numbers as untrusted input, as demonstrated by a 1e300 argument to c_double.from_param. This occurs because sprintf is used unsafely.
-  CVE-2020-29622: A race condition was addressed with additional validation. This issue is fixed in Security Update 2021-005 Catalina." />
+2022  CVE-2022-26490: st21nfca_connectivity_event_received in drivers/nfc/st21nfca/se.c in the Linux kernel through 5.16.12 has EVT_TRANSACTION buffer overflows because of untrusted length parameters.  2021   CVE-2021-3177: Python 3.x through 3.9.1 has a buffer overflow in PyCArg_repr in _ctypes/callproc.c, which may lead to remote code execution in certain Python applications that accept floating-point numbers as untrusted input, as demonstrated by a 1e300 argument to c_double." />
 <meta property="og:url" content="https://pwning.systems/bugs/" />
 <meta property="og:site_name" content="pwning.systems" />
 
@@ -158,6 +156,10 @@
 
   <div class="post-content"><div>
         <p>The following are some of the bugs I discovered:</p>
+<h2 id="2022">2022<a href="#2022" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
+<ul>
+<li><a href="https://nvd.nist.gov/vuln/detail/CVE-2022-26490">CVE-2022-26490</a>: st21nfca_connectivity_event_received in drivers/nfc/st21nfca/se.c in the Linux kernel through 5.16.12 has EVT_TRANSACTION buffer overflows because of untrusted length parameters.</li>
+</ul>
 <h2 id="2021">2021<a href="#2021" class="hanchor" ariaLabel="Anchor">&#8983;</a> </h2>
 <ul>
 <li>
