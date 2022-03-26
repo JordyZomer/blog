@@ -172,7 +172,7 @@ Let&amp;rsquo;s pretend we have the following code, which passes some user-input
   
 
   <div class="post-content"><div>
-        <p>It is likely that we have all seen PHP filters that prevent us from encountering vulnerabilities. Here in this blog post, I&rsquo;ll walk you through my thought process for bypassing a filter by looking for a bug in the filter itself in order to reach a bug!</p>
+        <p><em>It is likely that we have all seen PHP filters that prevent us from encountering vulnerabilities. Here in this blog post, I&rsquo;ll walk you through my thought process for bypassing a filter by looking for a bug in the filter itself in order to reach a bug!</em></p>
 <p>Let&rsquo;s pretend we have the following code, which passes some user-input to <code>filter_var()</code> and uses the <code>FILTER FLAG HOSTNAME</code> variable. This adds the functionality to validate hostnames on a per-host rationale (this means that they must begin with an alphanumeric character and must contain only alphanumerics or hyphens throughout their entire length). Following the successful completion of this check, the user-input will be used in a system command (thus potentially introducing a command injection vulnerability). The code that is generated will resemble something like the following.</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-php" data-lang="php"><span style="color:#f92672">&lt;?</span><span style="color:#a6e22e">php</span>
  
