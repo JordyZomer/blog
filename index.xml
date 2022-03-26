@@ -15,7 +15,7 @@
       
       <guid>https://pwning.systems/posts/php_filter_var_shenanigans/</guid>
       <description>It is likely that we have all seen PHP filters that prevent us from encountering vulnerabilities. Here in this blog post, I&amp;rsquo;ll walk you through my thought process for bypassing a filter by looking for a bug in the filter itself in order to reach a bug!
-Let&amp;rsquo;s pretend we have the following code, which passes some user-input to filter_var() and uses the FILTER FLAG HOSTNAME variable. This adds the functionality to validate hostnames on a per-host rationale (this means that they must begin with an alphanumeric character and must contain only alphanumerics or hyphens throughout their entire length).</description>
+Let&amp;rsquo;s pretend we have the following code, which passes some user-input to filter_var() and uses the FILTER_VALIDATE_DOMAIN or FILTER FLAG HOSTNAME flag. This adds the functionality to validate hostnames on a per-host rationale (this means that they must begin with an alphanumeric character and must contain only alphanumerics or hyphens throughout their entire length).</description>
     </item>
     
     <item>
