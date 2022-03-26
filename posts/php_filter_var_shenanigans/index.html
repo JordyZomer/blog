@@ -253,7 +253,7 @@ $command <span style="color:#f92672">=</span> <span style="color:#e6db74">&#34;p
 	<span style="color:#66d9ef">return</span> <span style="color:#ae81ff">1</span>;
 }
 </code></pre></div><p>The code shown above is the actual code that checks to see that the hostname only contains alphanumeric characters or a hyphen (as opposed to other characters). As we can see, this only occurs if <code>s</code> is less than <code>e</code> in the first place.</p>
-<p>In simple terms: If a hostname is checked using PHP&rsquo;s <code>filter_var</code> function and the value passed to the function is too long, and the parameter <code>l</code> is then wrapping to zero, the check will not be performed. This results in the hostname being bypassed entirely.</p>
+<p>In simple terms: If a hostname is checked using PHP&rsquo;s <code>filter_var</code> function and the value passed to the function is too long, and the parameter <code>l</code> is then wrapping to zero, the check will not be performed. This results in the hostname check being bypassed entirely.</p>
 <p>Let&rsquo;s demonstrate this using a simple PoC!</p>
 <div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-php" data-lang="php"><span style="color:#f92672">&lt;?</span><span style="color:#a6e22e">php</span>  
   
