@@ -86,7 +86,7 @@ Prerequisites
       
       <guid>https://pwning.systems/bugs/</guid>
       <description>The following are some of the bugs I discovered:
-2022  CVE-2022-26490: st21nfca_connectivity_event_received in drivers/nfc/st21nfca/se.c in the Linux kernel through 5.16.12 has EVT_TRANSACTION buffer overflows because of untrusted length parameters.  2021   CVE-2021-3177: Python 3.x through 3.9.1 has a buffer overflow in PyCArg_repr in _ctypes/callproc.c, which may lead to remote code execution in certain Python applications that accept floating-point numbers as untrusted input, as demonstrated by a 1e300 argument to c_double.</description>
+2022   CVE-2022-26743: An out-of-bounds write issue was addressed with improved bounds checking. This issue is fixed in macOS Monterey 12.4. An attacker that has already achieved code execution in macOS Recovery may be able to escalate to kernel privileges. - Self note: This was both a write and a read of a user controlled size at a user controlled offset.</description>
     </item>
     
     <item>
