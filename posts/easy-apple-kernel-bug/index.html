@@ -7,7 +7,7 @@
   
   <meta http-equiv="content-type" content="text/html; charset=utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Earlier this year, I discovered a flaw in XNU, which is the kernel that Apple uses. And while it&amp;rsquo;s not a particularly complicated flaw, I wanted to explain how I discovered it and how it works, both so that I can motivate others and so that others can learn from my discovery.
+<meta name="description" content="Earlier this year, I discovered a flaw in XNU, which is the kernel that Apple uses on both macOS and iOS. While it&amp;rsquo;s not a particularly complicated flaw, I wanted to explain how I discovered it and how it works, both so that I can motivate others and so that they can learn from my discovery.
 Within the memdev.c file (the ramdisk device driver), I found the source of the issue, which was a write/read operation that exceeded the allowed range." />
 <meta name="keywords" content="apple, kernel, vulnerability" />
 <meta name="robots" content="noodp" />
@@ -43,7 +43,7 @@ Within the memdev.c file (the ramdisk device driver), I found the source of the 
 <meta property="og:locale" content="en" />
 <meta property="og:type" content="article" />
 <meta property="og:title" content="A tale of a simple Apple kernel bug">
-<meta property="og:description" content="Earlier this year, I discovered a flaw in XNU, which is the kernel that Apple uses. And while it&#39;s not a particularly complicated flaw, I wanted to explain how I discovered it and how it works, both so that I can motivate others and so that others can learn from my discovery." />
+<meta property="og:description" content="Earlier this year, I discovered a flaw in XNU, which is the kernel that Apple uses on both macOS and iOS. While it&#39;s not a particularly complicated flaw, I wanted to explain how I discovered it and how it works, both so that I can motivate others and so that they can learn from my discovery." />
 <meta property="og:url" content="https://pwning.systems/posts/easy-apple-kernel-bug/" />
 <meta property="og:site_name" content="pwning.systems" />
 
@@ -172,23 +172,23 @@ Within the memdev.c file (the ramdisk device driver), I found the source of the 
   
 
   <div class="post-content"><div>
-        <p>Earlier this year, I discovered a flaw in XNU, which is the kernel that Apple uses. And while it&rsquo;s not a particularly complicated flaw, I wanted to explain how I discovered it and how it works, both so that I can motivate others and so that others can learn from my discovery.</p>
-<p>Within the <code>memdev.c</code> file (the ramdisk device driver), I found the source of the issue, which was a write/read operation that exceeded the allowed range. Why are ramdisks such an intriguing target to chase? If you identify a bug in the driver, it may give you the ability to execute code in the kernel. Additionally, on some systems, you may be able to construct ramdisks with particular settings such that it is mapped to physical memory, which may give you the ability to read and write data to physical memory.</p>
+        <p>Earlier this year, I discovered a flaw in <a href="https://en.wikipedia.org/wiki/XNU">XNU</a>, which is the kernel that Apple uses on both macOS and iOS. While it&rsquo;s not a particularly complicated flaw, I wanted to explain how I discovered it and how it works, both so that I can motivate others and so that they can learn from my discovery.</p>
+<p>Within the <a href="https://github.com/apple-open-source/macos/blob/master/xnu/bsd/dev/memdev.c"><code>memdev.c</code></a> file (the ramdisk device driver), I found the source of the issue, which was a write/read operation that exceeded the allowed range. Why are ramdisks such an intriguing target to chase? If you identify a bug in the driver, it may give you the ability to execute code in the kernel. Additionally, on some systems, you may be able to construct ramdisks with particular settings such that it is mapped to physical memory, which may give you the ability to read and write data to physical memory.</p>
 <p>In order for us to understand the bug, we will first have to figure out what uimove is.</p>
 <p>Data can be moved between user space and kernel space with the help of the <code>uiomove()</code> function. To a large extent, it is comparable to an I/O vector.</p>
 <p>The <code>uimove()</code> function requires three parameters: the location of the destination buffer, the size of the buffer, and a pointer to the <code>uio</code> structure.</p>
 <p>The <code>uio</code> structure looks like this:</p>
-<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-C" data-lang="C">     <span style="color:#66d9ef">struct</span> uio	{
-	     <span style="color:#66d9ef">struct</span>  iovec <span style="color:#f92672">*</span>uio_iov;	     <span style="color:#75715e">/*	scatter/gather list */</span>
-	     <span style="color:#66d9ef">int</span>     uio_iovcnt;	     <span style="color:#75715e">/*	length of scatter/gather list */</span>
-	     off_t   uio_offset;	     <span style="color:#75715e">/*	offset in target object	*/</span>
-	     ssize_t uio_resid;		     <span style="color:#75715e">/*	remaining bytes	to copy	*/</span>
-	     <span style="color:#66d9ef">enum</span>    uio_seg uio_segflg;     <span style="color:#75715e">/*	address	space */</span>
-	     <span style="color:#66d9ef">enum</span>    uio_rw uio_rw;	     <span style="color:#75715e">/*	operation */</span>
-	     <span style="color:#66d9ef">struct</span>  <span style="color:#66d9ef">thread</span> <span style="color:#f92672">*</span>uio_td;	     <span style="color:#75715e">/*	owner */</span>
-     };
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-C" data-lang="C"><span style="color:#66d9ef">struct</span> uio	{
+     <span style="color:#66d9ef">struct</span>  iovec <span style="color:#f92672">*</span>uio_iov;	     <span style="color:#75715e">/*	scatter/gather list */</span>
+     <span style="color:#66d9ef">int</span>     uio_iovcnt;	     <span style="color:#75715e">/*	length of scatter/gather list */</span>
+     off_t   uio_offset;	     <span style="color:#75715e">/*	offset in target object	*/</span>
+     ssize_t uio_resid;		     <span style="color:#75715e">/*	remaining bytes	to copy	*/</span>
+     <span style="color:#66d9ef">enum</span>    uio_seg uio_segflg;     <span style="color:#75715e">/*	address	space */</span>
+     <span style="color:#66d9ef">enum</span>    uio_rw uio_rw;	     <span style="color:#75715e">/*	operation */</span>
+     <span style="color:#66d9ef">struct</span>  <span style="color:#66d9ef">thread</span> <span style="color:#f92672">*</span>uio_td;	     <span style="color:#75715e">/*	owner */</span>
+};
 </code></pre></div><p>Once you know how this function works, you can probably foresee the potential problems that could arise.  For example what happens when you put a size argument that&rsquo;s bigger than the destination buffer. This is what I started searching for.</p>
-<p>When we take a look at the <code>uio</code> struct, we notice that it contains two fields that spark our interest: <code>uio_resid</code> and <code>uio_offset</code>. Where <code>uio_resid</code> refers to the number of bytes that still need to be copied and <code>uio_offset</code> specifies the position inside the buffer that will be used as the destination.</p>
+<p>When we take a look at the <code>uio</code> struct, we notice that it contains two fields that relevant to our interest: <code>uio_resid</code> and <code>uio_offset</code>. Where <code>uio_resid</code> refers to the number of bytes that still need to be copied and <code>uio_offset</code> specifies the position inside the buffer that will be used as the destination.</p>
 <p>Therefore, the first thing that I would try would be to search for locations where <code>uio_resid</code> is used in the size parameter. And this is when <a href="https://github.com/googleprojectzero/weggli">Weggli</a> entered the picture!</p>
 <p>I started exploring with a simple weggli query like this:</p>
 <p><code>weggli -u -R func=uiomove '$func(_,_,_);' ./</code></p>
