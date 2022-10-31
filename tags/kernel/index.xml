@@ -15,7 +15,7 @@
       
       <guid>https://pwning.systems/posts/easy-apple-kernel-bug/</guid>
       <description>Earlier this year, I discovered a flaw in XNU, which is the kernel that Apple uses on both macOS and iOS. While it&amp;rsquo;s not a particularly complicated flaw, I wanted to explain how I discovered it and how it works, both so that I can motivate others and so that they can learn from my discovery.
-Within the memdev.c file (the ramdisk device driver), I found the source of the issue, which was a write/read operation that exceeded the allowed range.</description>
+Within the memdev.c file (the ramdisk device driver), I found the source of the vulnerability, which was a write/read operation that exceeded the allowed range.</description>
     </item>
     
     <item>
