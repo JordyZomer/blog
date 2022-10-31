@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<script data-goatcounter="https://pwningsystems.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+<head>
+  
+    <title>A tale of a simple Apple kernel bug :: pwning.systems</title>
+  
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Earlier on in this year, I discovered a flaw in XNU, which is the kernel that Apple uses. And while it&amp;rsquo;s not a particularly complicated flaw, I wanted to explain how I discovered it and how it works, both so that I can motivate others and so that others can learn from my discovery.
+Within the memdev.c file (the ramdisk device driver), I found the source of the issue, which was a write/read operation that exceeded the allowed range." />
+<meta name="keywords" content="apple, kernel, vulnerability" />
+<meta name="robots" content="noodp" />
+<link rel="canonical" href="https://pwning.systems/posts/easy-apple-kernel-bug/" />
+
+
+
+
+<link rel="stylesheet" href="https://pwning.systems/assets/style.css">
+
+  <link rel="stylesheet" href="https://pwning.systems/assets/green.css">
+
+
+
+
+
+
+<link rel="apple-touch-icon" href="https://pwning.systems/img/apple-touch-icon-192x192.png">
+
+  <link rel="shortcut icon" href="https://pwning.systems/img/favicon/green.png">
+
+
+
+<meta name="twitter:card" content="summary" />
+
+  
+    <meta name="twitter:site" content="https://pwning.systems/" />
+  
+    <meta name="twitter:creator" content="pwningsystems" />
+
+
+
+<meta property="og:locale" content="en" />
+<meta property="og:type" content="article" />
+<meta property="og:title" content="A tale of a simple Apple kernel bug">
+<meta property="og:description" content="Earlier on in this year, I discovered a flaw in XNU, which is the kernel that Apple uses. And while it&#39;s not a particularly complicated flaw, I wanted to explain how I discovered it and how it works, both so that I can motivate others and so that others can learn from my discovery." />
+<meta property="og:url" content="https://pwning.systems/posts/easy-apple-kernel-bug/" />
+<meta property="og:site_name" content="pwning.systems" />
+
+  <meta property="og:image" content="https://pwning.systems/">
+
+<meta property="og:image:width" content="2048">
+<meta property="og:image:height" content="1024">
+
+
+  <meta property="article:published_time" content="2022-10-31 19:30:12 &#43;0200 &#43;0200" />
+
+
+
+
+
+
+
+
+
+
+
+
+</head>
+<body class="green">
+
+
+<div class="container center headings--one-size">
+
+  <header class="header">
+  <div class="header__inner">
+    <div class="header__logo">
+      <a href="/">
+  <div class="logo">
+    pwning.systems
+  </div>
+</a>
+
+    </div>
+    
+      <div class="menu-trigger">menu</div>
+    
+  </div>
+  
+    <nav class="menu">
+  <ul class="menu__inner menu__inner--desktop">
+    
+      
+        
+          <li><a href="/about">About</a></li>
+        
+      
+        
+          <li><a href="/bugs">Bugs</a></li>
+        
+      
+        
+          <li><a href="/links">Links</a></li>
+        
+      
+        
+          <li><a href="/index.xml">RSS</a></li>
+        
+      
+      
+    
+
+    
+  </ul>
+
+  <ul class="menu__inner menu__inner--mobile">
+    
+      
+        <li><a href="/about">About</a></li>
+      
+    
+      
+        <li><a href="/bugs">Bugs</a></li>
+      
+    
+      
+        <li><a href="/links">Links</a></li>
+      
+    
+      
+        <li><a href="/index.xml">RSS</a></li>
+      
+    
+    
+  </ul>
+</nav>
+
+  
+</header>
+
+
+  <div class="content">
+    
+<div class="post">
+  <h1 class="post-title">
+    <a href="https://pwning.systems/posts/easy-apple-kernel-bug/">A tale of a simple Apple kernel bug</a></h1>
+  <div class="post-meta">
+    
+      <span class="post-date">
+        2022-10-31 
+      </span>
+    
+    
+    <span class="post-author">:: Jordy Zomer</span>
+    
+  </div>
+
+  
+  <span class="post-tags">
+    
+    #<a href="https://pwning.systems/tags/kernel/">kernel</a>&nbsp;
+    
+    #<a href="https://pwning.systems/tags/apple/">apple</a>&nbsp;
+    
+    #<a href="https://pwning.systems/tags/vulnerability/">vulnerability</a>&nbsp;
+    
+  </span>
+  
+
+  
+
+  
+
+  <div class="post-content"><div>
+        <p>Earlier on in this year, I discovered a flaw in XNU, which is the kernel that Apple uses. And while it&rsquo;s not a particularly complicated flaw, I wanted to explain how I discovered it and how it works, both so that I can motivate others and so that others can learn from my discovery.</p>
+<p>Within the memdev.c file (the ramdisk device driver), I found the source of the issue, which was a write/read operation that exceeded the allowed range. Why are ramdisks such an intriguing target to chase? If you identify a bug in the driver, it may give you the ability to execute code in the kernel. Additionally, on some systems, you may be able to construct ramdisks with particular settings such that it is mapped to physical memory, which may give you the ability to physically read and write data.</p>
+<p>In order for us to understand the bug, we will first have to figure out what uimove is.</p>
+<p>Data can be moved between user space and kernel space with the help of the <code>uiomove()</code> function. To a large extent, it is comparable to an I/O vector.</p>
+<p>The <code>uimove()</code> function requires three parameters: the location of the destination buffer, the size of the buffer, and a pointer to the <code>uio</code> structure.</p>
+<p>The <code>uio</code> structure looks like this:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-C" data-lang="C">     <span style="color:#66d9ef">struct</span> uio	{
+	     <span style="color:#66d9ef">struct</span>  iovec <span style="color:#f92672">*</span>uio_iov;	     <span style="color:#75715e">/*	scatter/gather list */</span>
+	     <span style="color:#66d9ef">int</span>     uio_iovcnt;	     <span style="color:#75715e">/*	length of scatter/gather list */</span>
+	     off_t   uio_offset;	     <span style="color:#75715e">/*	offset in target object	*/</span>
+	     ssize_t uio_resid;		     <span style="color:#75715e">/*	remaining bytes	to copy	*/</span>
+	     <span style="color:#66d9ef">enum</span>    uio_seg uio_segflg;     <span style="color:#75715e">/*	address	space */</span>
+	     <span style="color:#66d9ef">enum</span>    uio_rw uio_rw;	     <span style="color:#75715e">/*	operation */</span>
+	     <span style="color:#66d9ef">struct</span>  <span style="color:#66d9ef">thread</span> <span style="color:#f92672">*</span>uio_td;	     <span style="color:#75715e">/*	owner */</span>
+     };
+</code></pre></div><p>Once you know how this function works, you can probably foresee the potential problems that could arise.  For example what happens when you put a size argument that&rsquo;s bigger than the destination buffer. This is what I started searching for.</p>
+<p>When we take a look at the <code>uio</code> struct, we notice that it contains two fields that spark our interest: <code>uio_resid</code> and <code>uio_offset</code>. Where <code>uio_resid</code> refers to the number of bytes that still need to be copied and <code>uio_offset</code> specifies the position inside the buffer that will be used as the destination.</p>
+<p>Therefore, the first thing that I would try would be to search for locations where <code>uio_resid</code> is used in the size parameter. And this is when <a href="https://github.com/googleprojectzero/weggli">Weggli</a> entered the picture!</p>
+<p>I started exploring with a simple weggli query like this:</p>
+<p><code>weggli -u -R func=uiomove '$func(_,_,_);' ./</code></p>
+<p>This would search for all calls to functions that contain the word <code>uiomove</code> anywhere in the name of the function. This gave a bunch of results, but I was too lazy to go through them manually.</p>
+<p>After that, I attempted to make the query a little more specific by checking to see if the word <code>resid</code> was included in the size argument anywhere. Unfortunately, this did not provide any results; however, after a little bit of fiddling around, I discovered that it produces results if the <code>resid</code> variable is included in a sub-expression of the size argument like seen here:</p>
+<p><code>weggli -u -R func=uiomove -R 'resid=resid' '$func(_,_($resid),_);' ./</code></p>
+<p>This gave two results, one of them containing <code>min()</code> so I didn&rsquo;t bother looking at that. The other one however seemed promising:</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-C" data-lang="C">.<span style="color:#f92672">/</span>xnu<span style="color:#f92672">/</span>.<span style="color:#f92672">/</span>bsd<span style="color:#f92672">/</span>dev<span style="color:#f92672">/</span>memdev.c:<span style="color:#ae81ff">208</span>
+<span style="color:#66d9ef">static</span> <span style="color:#66d9ef">int</span>
+mdevrw(dev_t dev, <span style="color:#66d9ef">struct</span> uio <span style="color:#f92672">*</span>uio, __unused <span style="color:#66d9ef">int</span> ioflag)
+..
+                        uio<span style="color:#f92672">-&gt;</span>uio_segflg <span style="color:#f92672">=</span> UIO_PHYS_USERSPACE32;
+                } <span style="color:#66d9ef">else</span> {
+                        uio<span style="color:#f92672">-&gt;</span>uio_segflg <span style="color:#f92672">=</span> UIO_PHYS_USERSPACE;
+                }
+        }
+        status <span style="color:#f92672">=</span> uiomove64(mdata, (<span style="color:#66d9ef">int</span>)uio_resid(uio), uio);    <span style="color:#75715e">/* Move the data */</span>
+        uio<span style="color:#f92672">-&gt;</span>uio_segflg <span style="color:#f92672">=</span> saveflag;                                                     <span style="color:#75715e">/* Restore the flag */</span>
+
+        <span style="color:#66d9ef">return</span> status;
+}
+</code></pre></div><p>So the <code>mdevrw</code> function appears to use something with <code>resid</code> in the size argument. However it&rsquo;s not using <code>uio-&gt;uio_resid</code>, apparently <code>uio_resid()</code> is just a macro that returns <code>uio-&gt;uio_resid</code>. So that works as well :')</p>
+<p>So I took a look at the memdev driver&rsquo;s mdevrw function.</p>
+<div class="highlight"><pre tabindex="0" style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-C" data-lang="C"><span style="color:#66d9ef">static</span> <span style="color:#66d9ef">int</span>
+<span style="color:#a6e22e">mdevrw</span>(dev_t dev, <span style="color:#66d9ef">struct</span> uio <span style="color:#f92672">*</span>uio, __unused <span style="color:#66d9ef">int</span> ioflag)
+{
+        <span style="color:#66d9ef">int</span>                     status;
+        addr64_t                mdata;
+        <span style="color:#66d9ef">int</span>                     devid;
+        <span style="color:#66d9ef">enum</span> uio_seg    saveflag;
+
+        devid <span style="color:#f92672">=</span> minor(dev);                                                                     <span style="color:#75715e">/* Get minor device number */</span>
+
+        <span style="color:#66d9ef">if</span> (devid <span style="color:#f92672">&gt;=</span> NB_MAX_MDEVICES) {
+                <span style="color:#66d9ef">return</span> ENXIO;                                                                 <span style="color:#75715e">/* Not valid */</span>
+        }
+        <span style="color:#66d9ef">if</span> (<span style="color:#f92672">!</span>(mdev[devid].mdFlags <span style="color:#f92672">&amp;</span> mdInited)) {
+                <span style="color:#66d9ef">return</span> ENXIO;                                 <span style="color:#75715e">/* Have we actually been defined yet? */</span>
+        }
+        mdata <span style="color:#f92672">=</span> ((addr64_t)mdev[devid].mdBase <span style="color:#f92672">&lt;&lt;</span> <span style="color:#ae81ff">12</span>) <span style="color:#f92672">+</span> uio<span style="color:#f92672">-&gt;</span>uio_offset; <span style="color:#75715e">/* Point to the area in &#34;file&#34; */</span>
+
+        saveflag <span style="color:#f92672">=</span> uio<span style="color:#f92672">-&gt;</span>uio_segflg;                                                     <span style="color:#75715e">/* Remember what the request is */</span>
+<span style="color:#75715e">#if LP64_DEBUG
+</span><span style="color:#75715e"></span>        <span style="color:#66d9ef">if</span> (UIO_IS_USER_SPACE(uio) <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span> <span style="color:#f92672">&amp;&amp;</span> UIO_IS_SYS_SPACE(uio) <span style="color:#f92672">==</span> <span style="color:#ae81ff">0</span>) {
+                panic(<span style="color:#e6db74">&#34;mdevrw - invalid uio_segflg&#34;</span>);
+        }
+<span style="color:#75715e">#endif </span><span style="color:#75715e">/* LP64_DEBUG */</span><span style="color:#75715e">
+</span><span style="color:#75715e"></span>        <span style="color:#75715e">/* Make sure we are moving from physical ram if physical device */</span>
+        <span style="color:#66d9ef">if</span> (mdev[devid].mdFlags <span style="color:#f92672">&amp;</span> mdPhys) {
+                <span style="color:#66d9ef">if</span> (uio<span style="color:#f92672">-&gt;</span>uio_segflg <span style="color:#f92672">==</span> UIO_USERSPACE64) {
+                        uio<span style="color:#f92672">-&gt;</span>uio_segflg <span style="color:#f92672">=</span> UIO_PHYS_USERSPACE64;
+                } <span style="color:#66d9ef">else</span> <span style="color:#66d9ef">if</span> (uio<span style="color:#f92672">-&gt;</span>uio_segflg <span style="color:#f92672">==</span> UIO_USERSPACE32) {
+                        uio<span style="color:#f92672">-&gt;</span>uio_segflg <span style="color:#f92672">=</span> UIO_PHYS_USERSPACE32;
+                } <span style="color:#66d9ef">else</span> {
+                        uio<span style="color:#f92672">-&gt;</span>uio_segflg <span style="color:#f92672">=</span> UIO_PHYS_USERSPACE;
+                }
+        }
+        status <span style="color:#f92672">=</span> uiomove64(mdata, (<span style="color:#66d9ef">int</span>)uio_resid(uio), uio);    <span style="color:#75715e">/* Move the data */</span>
+        uio<span style="color:#f92672">-&gt;</span>uio_segflg <span style="color:#f92672">=</span> saveflag;                                                     <span style="color:#75715e">/* Restore the flag */</span>
+
+        <span style="color:#66d9ef">return</span> status;
+}
+</code></pre></div><p>When we examine this function, we can plainly see that there is no size check, which indicates that we are dealing with a read and a write of an arbitrary size to and from the kernel (This is because the user decides wether they want to read or write, based on the syscall they use).</p>
+<p>Next to that there&rsquo;s one other thing that sparked my interest, did you see this line?</p>
+<p><code>mdata = ((addr64_t)mdev[devid].mdBase &lt;&lt; 12) + uio-&gt;uio_offset;</code></p>
+<p>Yes, that&rsquo;s right. They don&rsquo;t perform any size checks, but they still use the user-provided offset to figure out where the destination is.</p>
+<p>At this point, it appears that we are dealing with an issue that involves reading and writing data on an arbitrary offset of an arbitrary size. Looks like a textbook bug right!</p>
+<p>Simply opening the device, reading from it, or writing to it will cause this problem to be triggered. The only catch is that you need to have unsandboxed code execution and be logged in as root in order to be able to exploit this problem. This is the sole limitation. Therefore, it is not as severe; but, I suppose that it could still be beneficial in chains.</p>
+<p>After I had already reported this problem to Apple, I happened to come across a proof-of-concept for the bug on Twitter because someone was diffing the patches which was fun:</p>
+<p><a href="https://twitter.com/littlelailo/status/1518613427480145922">https://twitter.com/littlelailo/status/1518613427480145922</a></p>
+<p>The vulnerability, which is now known as CVE-2022-26743, has now been patched and rewarded.</p>
+<p>That is all I have to say; I hope you enjoyed it, and I also hope I was successful in inspiring some of you to search for bugs and not let yourself become overwhelmed by targets. Even though Apple is doing a great job by hardening their allocators with &lsquo;kalloc type&rsquo; etc. There are still a few simple bugs hidden away in there, and they are just waiting for you to find them.</p>
+
+      </div></div>
+
+  
+  
+<div class="pagination">
+    <div class="pagination__title">
+        <span class="pagination__title-h">Read other posts</span>
+        <hr />
+    </div>
+    <div class="pagination__buttons">
+        
+        
+        <span class="button next">
+            <a href="https://pwning.systems/posts/php_filter_var_shenanigans/">
+                <span class="button__text">PHP filter_var shenanigans</span>
+                <span class="button__icon">→</span>
+            </a>
+        </span>
+        
+    </div>
+</div>
+
+  
+
+  
+
+</div>
+
+  </div>
+
+  
+    <footer class="footer">
+  <div class="footer__inner">
+    
+      <div class="copyright copyright--user">
+        <span>Jordy Zomer</span>
+    
+        <span>:: Theme made by <a href="https://twitter.com/panr">panr</a></span>
+      </div>
+  </div>
+</footer>
+
+<script src="https://pwning.systems/assets/main.js"></script>
+<script src="https://pwning.systems/assets/prism.js"></script>
+
+
+
+
+
+
+
+  
+</div>
+
+</body>
+</html>
